@@ -84,7 +84,9 @@ npm run build:h5
 npm run build:weapp
 ```
 
-`npm run check` 会依次执行 TypeScript 检查、ESLint 和 Jest。推送到 `main` 或创建 Pull Request 时，GitHub Actions 也会执行同一组基础质量检查。
+`npm run check` 会依次执行 TypeScript 检查、ESLint 和 Jest。推送到 `main` 或创建 Pull Request 时，GitHub Actions 会执行这些质量检查，并完成 H5 与微信小程序生产构建。两个 `dist/` 构建结果会分别作为 `h5-dist` 和 `weapp-dist` 保存 7 天，便于下载验收。
+
+当前本地 MVP 的 CI 不需要 GitHub Secrets。未来接入后端部署或第三方服务时，应通过仓库的 `Settings -> Secrets and variables -> Actions` 配置密钥；微信 AppSecret、AI API 密钥等敏感信息不得提交到代码仓库或打包进前端产物。
 
 ## 页面结构
 

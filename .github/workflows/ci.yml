@@ -1,5 +1,8 @@
 name: CI
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:
@@ -32,3 +35,25 @@ jobs:
 
       - name: Run tests
         run: npm run test
+
+      - name: Build H5
+        run: npm run build:h5
+
+      - name: Upload H5 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: h5-dist
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Build WeChat Mini Program
+        run: npm run build:weapp
+
+      - name: Upload WeChat Mini Program artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: weapp-dist
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
