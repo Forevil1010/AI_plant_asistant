@@ -1,0 +1,170 @@
+.home-container {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding-bottom: 120px;
+}
+
+.header {
+  position: relative;
+  height: 480px;
+  border-radius: 0 0 32px 32px;
+  overflow: hidden;
+}
+
+.header-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.header-content {
+  position: relative;
+  z-index: 1;
+  padding: 60px 32px 40px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+}
+
+.title {
+  display: block;
+  font-size: 48px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  display: block;
+  font-size: 28px;
+  color: rgba(255,255,255,0.9);
+}
+
+.quick-actions {
+  display: flex;
+  gap: 24px;
+  padding: 0 24px;
+  margin-top: -60px;
+  position: relative;
+  z-index: 2;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 24px;
+  border-radius: 20px;
+  border: none;
+  
+  &.primary {
+    background: linear-gradient(135deg, #52c41a 0%, #389e0d 100%);
+  }
+  
+  &.secondary {
+    background: #fff;
+    border: 2px solid #e8e8e8;
+  }
+}
+
+.action-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.action-text {
+  font-size: 28px;
+  font-weight: 600;
+  
+  .primary & {
+    color: #fff;
+  }
+  
+  .secondary & {
+    color: #333;
+  }
+}
+
+.features {
+  padding: 32px 24px;
+}
+
+.section-title {
+  display: block;
+  font-size: 32px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24px;
+}
+
+.feature-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.feature-card {
+  width: calc(50% - 10px);
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.feature-icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.feature-name {
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.feature-desc {
+  font-size: 24px;
+  color: #999;
+  text-align: center;
+}
+
+.tips-section {
+  padding: 0 24px;
+}
+
+.tip-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.tip-image {
+  width: 100%;
+  height: 200px;
+}
+
+.tip-content {
+  padding: 24px;
+}
+
+.tip-title {
+  display: block;
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.tip-text {
+  font-size: 26px;
+  color: #666;
+  line-height: 1.6;
+}
