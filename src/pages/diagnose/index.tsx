@@ -8,6 +8,12 @@ import { createId, useApp } from '../../store'
 import { DiagnosisResult } from '../../types'
 import './index.scss'
 
+const severityClassNames: Record<DiagnosisResult['severity'], string> = {
+  轻微: 'mild',
+  中等: 'moderate',
+  严重: 'severe'
+}
+
 const Diagnose: React.FC = () => {
   const { state, addDiagnosisHistory } = useApp()
   const [imageUrl, setImageUrl] = useState('')
@@ -70,7 +76,7 @@ const Diagnose: React.FC = () => {
         <View className='diagnosis-result'>
           <Text className='diagnosis-kicker'>智能诊断结果</Text>
           <Text className='diagnosis-title'>{result.title}</Text>
-          <View className='diagnosis-meta'><Text className='pill'>{result.confidenceLabel}</Text><Text className={`severity severity--${result.severity}`}>{result.severity}</Text></View>
+          <View className='diagnosis-meta'><Text className='pill'>{result.confidenceLabel}</Text><Text className={`severity severity--${severityClassNames[result.severity]}`}>{result.severity}</Text></View>
 
           <View className='diagnosis-block'><Text className='diagnosis-block__title'>判断依据</Text>{result.evidence.map((item) => <View key={item} className='bullet-row'><Text className='bullet-dot' /><Text>{item}</Text></View>)}</View>
           <View className='diagnosis-block'><Text className='diagnosis-block__title'>可能原因</Text>{result.causes.map((item, index) => <View key={item} className='number-row'><Text>{index + 1}</Text><Text>{item}</Text></View>)}</View>

@@ -9,9 +9,9 @@
 .diagnosis-title { margin-top: 9px; color: #17251d; font-size: 37px; line-height: 1.35; font-weight: 700; }
 .diagnosis-meta { display: flex; gap: 11px; margin-top: 17px; }
 .severity { display: inline-flex; align-items: center; min-height: 40px; padding: 0 15px; border-radius: 999px; font-size: 21px; }
-.severity--轻微 { background: #edf3ea; color: #517248; }
-.severity--中等 { background: #fff2d5; color: #8a5b00; }
-.severity--严重 { background: #fde8e3; color: #9c3f34; }
+.severity--mild { background: #edf3ea; color: #517248; }
+.severity--moderate { background: #fff2d5; color: #8a5b00; }
+.severity--severe { background: #fde8e3; color: #9c3f34; }
 .diagnosis-block { padding: 25px 0; border-top: 1px solid #e3e7e2; }
 .diagnosis-block__title { display: block; margin-bottom: 17px; color: #26362c; font-size: 28px; font-weight: 650; }
 .bullet-row, .number-row { display: flex; align-items: flex-start; gap: 13px; margin-top: 13px; color: #4d5a52; font-size: 24px; line-height: 1.6; }
