@@ -1,0 +1,77 @@
+<view class="garden-page">
+  <view class="garden-band">
+    <view>
+      <text class="garden-kicker">MY GARDEN</text>
+      <text class="garden-title">我的花园</text>
+      <text class="garden-copy">{{plantCount}} 株植物 · {{pendingCount}} 项待办</text>
+    </view>
+    <button class="garden-add" bindtap="addPlant">+ 添加植物</button>
+  </view>
+
+  <view class="garden-content">
+    <view class="segment-control">
+      <view class="segment-item {{activeView === 'plants' ? 'segment-item--active' : ''}}" bindtap="showPlants">植物</view>
+      <view class="segment-item {{activeView === 'tasks' ? 'segment-item--active' : ''}}" bindtap="showTasks">待办任务</view>
+    </view>
+
+    <block wx:if="{{activeView === 'plants'}}">
+      <view wx:if="{{plants.length}}" class="plant-list">
+        <view wx:for="{{plants}}" wx:key="id" class="plant-card card">
+          <image class="plant-card__image" src="{{item.imagePath}}" mode="aspectFill" lazy-load bindtap="openPlant" data-id="{{item.id}}" />
+          <view class="plant-card__body">
+            <view class="plant-card__head" bindtap="openPlant" data-id="{{item.id}}">
+              <view>
+                <text class="plant-card__name">{{item.nickname}}</text>
+                <text class="plant-card__species">{{item.name}} · {{item.location}}</text>
+              </view>
+              <text class="plant-card__arrow">›</text>
+            </view>
+            <text class="plant-card__care">{{item.lastCareLabel}}</text>
+            <view class="plant-card__footer">
+              <text wx:if="{{item.pendingTasks}}" class="pill pill-warn">{{item.pendingTasks}} 项待办</text>
+              <text wx:else class="pill">暂无待办</text>
+              <button class="water-button" data-id="{{item.id}}" catchtap="quickWater">记录浇水</button>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view wx:else class="empty-state card garden-empty">
+        <text class="empty-mark">+</text>
+        <text class="empty-title">花园还是空的</text>
+        <text class="empty-copy">手动添加植物，或者先去拍照识别并加入花园。</text>
+        <button class="primary-button" bindtap="addPlant">添加第一株植物</button>
+      </view>
+    </block>
+
+    <block wx:else>
+      <view class="task-toolbar">
+        <text class="muted">按计划时间排序</text>
+        <button class="task-add-button" bindtap="addTask">+ 新建任务</button>
+      </view>
+
+      <view wx:if="{{tasks.length}}" class="garden-task-list">
+        <view wx:for="{{tasks}}" wx:key="id" class="garden-task card">
+          <view class="garden-task__head">
+            <view>
+              <text class="garden-task__title">{{item.typeLabel}} · {{item.plantName}}</text>
+              <text class="garden-task__time">{{item.dueLabel}}</text>
+            </view>
+            <text class="pill {{item.overdue ? 'pill-warn' : ''}}">{{item.overdue ? '已逾期' : '待完成'}}</text>
+          </view>
+          <text wx:if="{{item.note}}" class="garden-task__note">{{item.note}}</text>
+          <view class="garden-task__actions">
+            <button class="task-skip" data-id="{{item.id}}" bindtap="skipTask">跳过</button>
+            <button class="task-complete" data-id="{{item.id}}" bindtap="completeTask">完成任务</button>
+          </view>
+        </view>
+      </view>
+
+      <view wx:else class="empty-state card garden-empty">
+        <text class="empty-title">没有待办任务</text>
+        <text class="empty-copy">为植物创建浇水、施肥或观察计划。</text>
+        <button class="primary-button" bindtap="addTask">新建养护任务</button>
+      </view>
+    </block>
+  </view>
+</view>

@@ -1,0 +1,50 @@
+.local-notice {
+  padding: 22rpx 24rpx;
+  border-left: 8rpx solid #e1a63b;
+  background: #fff8e7;
+}
+
+.local-notice__label,
+.local-notice__copy {
+  display: block;
+}
+
+.local-notice__label {
+  color: #8a5b00;
+  font-size: 24rpx;
+  font-weight: 650;
+}
+
+.local-notice__copy {
+  margin-top: 7rpx;
+  color: #685735;
+  font-size: 23rpx;
+  line-height: 1.55;
+}
+
+.picker-arrow {
+  position: relative;
+}
+
+.picker-arrow::after {
+  position: absolute;
+  right: 24rpx;
+  content: '›';
+  color: #7d857f;
+  font-size: 38rpx;
+  transform: rotate(90deg);
+}
+
+.date-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 14rpx;
+}
+
+.task-note {
+  min-height: 170rpx;
+}
+
+.save-button {
+  margin-top: 32rpx;
+}

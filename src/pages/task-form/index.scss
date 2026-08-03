@@ -1,0 +1,7 @@
+.local-notice { padding: 21px 23px; border-left: 8px solid #e1a63b; background: #fff8e7; }
+.local-notice text { display: block; }
+.local-notice text:first-child { color: #8a5b00; font-size: 23px; font-weight: 650; }
+.local-notice text:last-child { margin-top: 7px; color: #685735; font-size: 22px; line-height: 1.55; }
+.date-grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 13px; }
+.task-note-input { min-height: 164px; }
+.save-button { margin-top: 30px; }

@@ -1,0 +1,54 @@
+<view class="page history-page">
+  <view class="page-header">
+    <text class="page-title">{{title}}</text>
+    <text class="page-subtitle">{{subtitle}}</text>
+  </view>
+
+  <block wx:if="{{type === 'identify'}}">
+    <view wx:if="{{identifyItems.length}}" class="history-list">
+      <view wx:for="{{identifyItems}}" wx:key="id" class="history-card card">
+        <image class="history-image" src="{{item.imagePath || item.result.imagePath}}" mode="aspectFill" />
+        <view class="history-main">
+          <view class="history-head">
+            <view>
+              <text class="history-title">{{item.result.name}}</text>
+              <text class="history-meta">可信度 {{item.confidenceText}}</text>
+            </view>
+            <text class="history-remove" data-id="{{item.id}}" bindtap="removeItem">删除</text>
+          </view>
+          <text class="history-summary">{{item.result.summary}}</text>
+          <text class="history-time">{{item.timeLabel}}</text>
+        </view>
+      </view>
+    </view>
+    <view wx:else class="empty-state card">
+      <text class="empty-title">还没有识别记录</text>
+      <text class="empty-copy">完成一次植物识别后，结果会出现在这里。</text>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view wx:if="{{diagnoseItems.length}}" class="history-list">
+      <view wx:for="{{diagnoseItems}}" wx:key="id" class="diagnose-history card">
+        <view class="history-head">
+          <view>
+            <text class="history-title">{{item.result.title}}</text>
+            <text class="history-meta">{{item.result.confidenceLabel}} · {{item.result.severity}}</text>
+          </view>
+          <text class="history-remove" data-id="{{item.id}}" bindtap="removeItem">删除</text>
+        </view>
+        <image wx:if="{{item.imagePath}}" class="diagnose-history__image" src="{{item.imagePath}}" mode="aspectFill" />
+        <text class="diagnose-history__input">{{item.inputSummary}}</text>
+        <view class="diagnose-history__action">
+          <text class="diagnose-history__label">首要建议</text>
+          <text class="diagnose-history__copy">{{item.result.actions[0]}}</text>
+        </view>
+        <text class="history-time">{{item.timeLabel}}</text>
+      </view>
+    </view>
+    <view wx:else class="empty-state card">
+      <text class="empty-title">还没有诊断记录</text>
+      <text class="empty-copy">提交图片或症状描述后，诊断结果会出现在这里。</text>
+    </view>
+  </block>
+</view>

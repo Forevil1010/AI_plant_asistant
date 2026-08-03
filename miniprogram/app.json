@@ -1,0 +1,35 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/identify/index",
+    "pages/garden/index",
+    "pages/diagnose/index",
+    "pages/profile/index",
+    "pages/plant-form/index",
+    "pages/plant-detail/index",
+    "pages/task-form/index",
+    "pages/history/index"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#F7F8F5",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "AI 园林助手",
+    "backgroundColor": "#F7F8F5",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#6E756F",
+    "selectedColor": "#176B45",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/home/index", "text": "首页" },
+      { "pagePath": "pages/identify/index", "text": "识别" },
+      { "pagePath": "pages/garden/index", "text": "花园" },
+      { "pagePath": "pages/diagnose/index", "text": "诊断" },
+      { "pagePath": "pages/profile/index", "text": "我的" }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

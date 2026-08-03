@@ -1,0 +1,46 @@
+<view class="page task-form-page">
+  <view class="page-header">
+    <text class="page-title">安排下一次养护</text>
+    <text class="page-subtitle">任务会先保存在本机。微信订阅提醒需开通 AppID 和云服务后启用。</text>
+  </view>
+
+  <view class="local-notice">
+    <text class="local-notice__label">本地模式</text>
+    <text class="local-notice__copy">当前可以在首页和花园查看待办，但暂时不会发送微信消息。</text>
+  </view>
+
+  <text class="field-label">植物</text>
+  <picker mode="selector" range="{{plantNames}}" value="{{plantIndex}}" bindchange="onPlantChange">
+    <view class="picker-field picker-arrow">{{plantNames[plantIndex] || '请选择植物'}}</view>
+  </picker>
+
+  <text class="field-label">任务类型</text>
+  <picker mode="selector" range="{{careTypeNames}}" value="{{careTypeIndex}}" bindchange="onTypeChange">
+    <view class="picker-field picker-arrow">{{careTypeNames[careTypeIndex]}}</view>
+  </picker>
+
+  <view class="date-grid">
+    <view>
+      <text class="field-label">日期</text>
+      <picker mode="date" value="{{date}}" bindchange="onDateChange">
+        <view class="picker-field">{{date}}</view>
+      </picker>
+    </view>
+    <view>
+      <text class="field-label">时间</text>
+      <picker mode="time" value="{{time}}" bindchange="onTimeChange">
+        <view class="picker-field">{{time}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <text class="field-label">重复</text>
+  <picker mode="selector" range="{{repeatNames}}" value="{{repeatIndex}}" bindchange="onRepeatChange">
+    <view class="picker-field picker-arrow">{{repeatNames[repeatIndex]}}</view>
+  </picker>
+
+  <text class="field-label">备注</text>
+  <textarea class="textarea task-note" value="{{note}}" maxlength="200" placeholder="例如：浇透后倒掉托盘积水" bindinput="onNoteInput" />
+
+  <button class="primary-button save-button" bindtap="save">保存任务</button>
+</view>

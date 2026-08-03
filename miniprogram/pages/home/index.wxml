@@ -1,0 +1,114 @@
+<view class="home-page">
+  <view class="home-band">
+    <view class="home-band__content">
+      <text class="home-kicker">{{greeting}}</text>
+      <text class="home-title">照料好每一株植物</text>
+      <text class="home-copy">今天有 {{pendingCount}} 项待办，花园里共有 {{plantCount}} 株植物</text>
+    </view>
+    <image class="home-band__image" src="/assets/plants/monstera.jpg" mode="aspectFill" />
+  </view>
+
+  <view class="home-content">
+    <view class="search-row">
+      <input
+        class="search-input"
+        value="{{query}}"
+        placeholder="搜索绿萝、龟背竹等"
+        confirm-type="search"
+        bindinput="onQueryInput"
+        bindconfirm="search"
+      />
+      <button class="search-button" bindtap="search">搜索</button>
+    </view>
+
+    <view wx:if="{{searched}}" class="search-panel card">
+      <view class="section-head search-panel__head">
+        <text class="section-title">搜索结果</text>
+        <text class="section-action" bindtap="clearSearch">关闭</text>
+      </view>
+      <block wx:if="{{searchResults.length}}">
+        <view wx:for="{{searchResults}}" wx:key="id" class="search-result">
+          <image class="search-result__image" src="{{item.imagePath}}" mode="aspectFill" />
+          <view class="search-result__content">
+            <text class="search-result__name">{{item.name}}</text>
+            <text class="search-result__latin">{{item.latinName}}</text>
+            <text class="search-result__summary">{{item.summary}}</text>
+          </view>
+        </view>
+      </block>
+      <view wx:else class="empty-state search-empty">
+        <text class="empty-title">没有找到相关资料</text>
+        <text class="empty-copy">可以换一个名称，或者直接拍照识别。</text>
+        <button class="secondary-button" bindtap="goIdentify">去拍照识别</button>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-head">
+        <text class="section-title">常用工具</text>
+      </view>
+      <view class="tool-grid">
+        <view class="tool-item tool-item--green" bindtap="goIdentify">
+          <text class="tool-item__mark">识</text>
+          <text class="tool-item__title">植物识别</text>
+          <text class="tool-item__copy">拍照认识植物</text>
+        </view>
+        <view class="tool-item tool-item--yellow" bindtap="goDiagnose">
+          <text class="tool-item__mark">诊</text>
+          <text class="tool-item__title">问题诊断</text>
+          <text class="tool-item__copy">图文描述症状</text>
+        </view>
+        <view class="tool-item tool-item--coral" bindtap="goGarden">
+          <text class="tool-item__mark">园</text>
+          <text class="tool-item__title">我的花园</text>
+          <text class="tool-item__copy">记录养护日常</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{todayTasks.length}}">
+      <view class="section-head">
+        <text class="section-title">今日待办</text>
+        <text class="section-action" bindtap="goGarden">查看全部</text>
+      </view>
+      <view class="task-list card">
+        <view wx:for="{{todayTasks}}" wx:key="id" class="task-row">
+          <view class="task-row__status {{item.overdue ? 'task-row__status--late' : ''}}"></view>
+          <view class="task-row__main">
+            <view class="task-row__title-line">
+              <text class="task-row__title">{{item.typeLabel}} · {{item.plantName}}</text>
+              <text wx:if="{{item.overdue}}" class="pill pill-warn">已逾期</text>
+            </view>
+            <text class="task-row__time">{{item.dueLabel}}</text>
+          </view>
+          <button class="task-row__done" data-id="{{item.id}}" bindtap="completeTask">完成</button>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-head">
+        <text class="section-title">今日养护提示</text>
+      </view>
+      <view class="tip-band">
+        <text class="tip-band__label">TIP</text>
+        <text class="tip-band__copy">{{dailyTip}}</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-head">
+        <text class="section-title">常见室内植物</text>
+      </view>
+      <scroll-view class="featured-scroll" scroll-x enable-flex>
+        <view wx:for="{{featured}}" wx:key="id" class="featured-card card">
+          <image class="featured-card__image" src="{{item.imagePath}}" mode="aspectFill" lazy-load />
+          <view class="featured-card__body">
+            <text class="featured-card__name">{{item.name}}</text>
+            <text class="featured-card__meta">{{item.tags.join(' · ')}}</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,145 @@
+.profile-page {
+  min-height: 100vh;
+  padding-bottom: 50rpx;
+}
+.profile-band {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  min-height: 210rpx;
+  padding: 34rpx 30rpx;
+  background: #25392e;
+  color: #ffffff;
+}
+
+.profile-avatar {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 94rpx;
+  height: 94rpx;
+  border-radius: 50%;
+  background: #dbece1;
+  color: #176b45;
+  font-size: 36rpx;
+  font-weight: 700;
+}
+
+.profile-name,
+.profile-mode {
+  display: block;
+}
+
+.profile-name {
+  font-size: 33rpx;
+  font-weight: 650;
+}
+
+.profile-mode {
+  margin-top: 6rpx;
+  color: #c8d9ce;
+  font-size: 23rpx;
+}
+
+.profile-status {
+  margin-left: auto;
+  padding: 10rpx 14rpx;
+  border: 1rpx solid #839e8c;
+  border-radius: 8rpx;
+  color: #d8e7dd;
+  font-size: 21rpx;
+}
+
+.profile-content {
+  padding: 24rpx 28rpx 0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1rpx solid #dfe4df;
+  border-radius: 8rpx;
+  background: #ffffff;
+}
+
+.stat-item {
+  padding: 24rpx 10rpx;
+  border-right: 1rpx solid #e7ebe7;
+  text-align: center;
+}
+
+.stat-item:last-child {
+  border-right: 0;
+}
+
+.stat-item text {
+  display: block;
+}
+
+.stat-item text:first-child {
+  color: #176b45;
+  font-size: 36rpx;
+  font-weight: 700;
+}
+
+.stat-item text:last-child {
+  margin-top: 5rpx;
+  color: #737b75;
+  font-size: 21rpx;
+}
+
+.section > .section-title {
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.menu-list {
+  padding: 0 22rpx;
+}
+
+.menu-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 104rpx;
+  border-bottom: 1rpx solid #edf0ec;
+}
+
+.menu-row:last-child {
+  border-bottom: 0;
+}
+
+.menu-title,
+.menu-copy {
+  display: block;
+}
+
+.menu-title {
+  color: #2a3830;
+  font-size: 27rpx;
+  font-weight: 600;
+}
+
+.menu-copy {
+  margin-top: 4rpx;
+  color: #7a827c;
+  font-size: 21rpx;
+}
+
+.menu-arrow {
+  color: #8a918c;
+  font-size: 42rpx;
+}
+
+.clear-button {
+  margin-top: 36rpx;
+}
+
+.free-note {
+  display: block;
+  margin-top: 24rpx;
+  color: #8a918c;
+  font-size: 21rpx;
+  text-align: center;
+}

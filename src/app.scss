@@ -1,0 +1,201 @@
+$green-900: #18392a;
+$green-700: #176b45;
+$green-100: #e9f3ed;
+$ink: #1f2923;
+$muted: #6f7871;
+$line: #dde4de;
+$surface: #ffffff;
+$background: #f6f8f5;
+$warning: #a86900;
+$danger: #a33d34;
+
+page {
+  min-height: 100%;
+  background: $background;
+  color: $ink;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 28px;
+  letter-spacing: 0;
+}
+
+view,
+text,
+button,
+input,
+textarea,
+image {
+  box-sizing: border-box;
+}
+
+button::after {
+  border: 0;
+}
+
+.page-shell {
+  min-height: 100vh;
+  padding: 28px 30px 56px;
+}
+
+.page-heading {
+  margin: 6px 0 28px;
+}
+
+.page-title,
+.page-copy,
+.section-title,
+.muted-text {
+  display: block;
+}
+
+.page-title {
+  color: #17251d;
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.page-copy {
+  margin-top: 10px;
+  color: $muted;
+  font-size: 25px;
+  line-height: 1.6;
+}
+
+.section {
+  margin-top: 34px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 52px;
+  margin-bottom: 14px;
+}
+
+.section-title {
+  color: $ink;
+  font-size: 31px;
+  font-weight: 650;
+}
+
+.section-link {
+  color: $green-700;
+  font-size: 24px;
+}
+
+.card {
+  border: 1px solid $line;
+  border-radius: 8px;
+  background: $surface;
+  box-shadow: 0 8px 24px rgba(28, 54, 38, 0.06);
+}
+
+.primary-button,
+.secondary-button,
+.danger-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 84px;
+  margin: 0;
+  border-radius: 8px;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.primary-button {
+  background: $green-700;
+  color: #ffffff;
+}
+
+.secondary-button {
+  border: 1px solid #b9d5c5;
+  background: #eef6f1;
+  color: $green-700;
+}
+
+.danger-button {
+  border: 1px solid #efc3bc;
+  background: #fff2ef;
+  color: $danger;
+}
+
+.field-label {
+  display: block;
+  margin: 24px 0 11px;
+  color: #35423a;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.field-input,
+.field-textarea,
+.picker-field {
+  width: 100%;
+  border: 1px solid #d9e0da;
+  border-radius: 8px;
+  background: #ffffff;
+  color: $ink;
+  font-size: 27px;
+}
+
+.field-input,
+.picker-field {
+  min-height: 82px;
+  padding: 0 22px;
+  line-height: 82px;
+}
+
+.field-textarea {
+  min-height: 190px;
+  padding: 20px 22px;
+  line-height: 1.6;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 15px;
+  border-radius: 999px;
+  background: $green-100;
+  color: $green-700;
+  font-size: 21px;
+  line-height: 40px;
+}
+
+.pill-warning {
+  background: #fff3d9;
+  color: $warning;
+}
+
+.empty-panel {
+  padding: 56px 30px;
+  color: $muted;
+  text-align: center;
+}
+
+.empty-title,
+.empty-copy {
+  display: block;
+}
+
+.empty-title {
+  color: #35423a;
+  font-size: 29px;
+  font-weight: 600;
+}
+
+.empty-copy {
+  max-width: 520px;
+  margin: 10px auto 26px;
+  font-size: 24px;
+  line-height: 1.6;
+}
+
+.muted-text {
+  color: $muted;
+  font-size: 23px;
+}

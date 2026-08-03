@@ -1,0 +1,196 @@
+page {
+  min-height: 100%;
+  background: #f7f8f5;
+  color: #1f2923;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 28rpx;
+  letter-spacing: 0;
+}
+view,
+text,
+button,
+input,
+textarea,
+image {
+  box-sizing: border-box;
+}
+
+button::after {
+  border: 0;
+}
+
+.page {
+  min-height: 100vh;
+  padding: 24rpx 28rpx 48rpx;
+}
+
+.page-header {
+  margin: 8rpx 0 28rpx;
+}
+
+.page-title {
+  display: block;
+  font-size: 44rpx;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #17251d;
+}
+
+.page-subtitle {
+  display: block;
+  margin-top: 10rpx;
+  color: #68716b;
+  font-size: 26rpx;
+  line-height: 1.6;
+}
+
+.section {
+  margin-top: 34rpx;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56rpx;
+  margin-bottom: 16rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  line-height: 1.4;
+  font-weight: 650;
+  color: #1f2923;
+}
+
+.section-action {
+  color: #176b45;
+  font-size: 25rpx;
+}
+
+.card {
+  background: #ffffff;
+  border: 1rpx solid #e3e7e2;
+  border-radius: 8rpx;
+  box-shadow: 0 8rpx 24rpx rgba(28, 54, 38, 0.06);
+}
+
+.primary-button,
+.secondary-button,
+.danger-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 88rpx;
+  border-radius: 8rpx;
+  font-size: 29rpx;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.primary-button {
+  color: #ffffff;
+  background: #176b45;
+}
+
+.secondary-button {
+  color: #176b45;
+  background: #eef6f1;
+  border: 1rpx solid #b9d5c5;
+}
+
+.danger-button {
+  color: #a33d34;
+  background: #fff2ef;
+  border: 1rpx solid #efc3bc;
+}
+
+.primary-button[disabled],
+.secondary-button[disabled] {
+  opacity: 0.46;
+}
+
+.input,
+.textarea,
+.picker-field {
+  width: 100%;
+  border: 1rpx solid #dce2dc;
+  border-radius: 8rpx;
+  background: #ffffff;
+  color: #1f2923;
+  font-size: 28rpx;
+}
+
+.input,
+.picker-field {
+  min-height: 84rpx;
+  padding: 0 24rpx;
+  line-height: 84rpx;
+}
+
+.textarea {
+  min-height: 210rpx;
+  padding: 22rpx 24rpx;
+  line-height: 1.6;
+}
+
+.field-label {
+  display: block;
+  margin: 24rpx 0 12rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #35423a;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  background: #eef6f1;
+  color: #176b45;
+  font-size: 22rpx;
+  line-height: 42rpx;
+}
+
+.pill-warn {
+  background: #fff4dc;
+  color: #8a5b00;
+}
+
+.empty-state {
+  padding: 62rpx 32rpx;
+  text-align: center;
+  color: #6e756f;
+}
+
+.empty-title {
+  display: block;
+  color: #35423a;
+  font-weight: 600;
+  font-size: 30rpx;
+}
+
+.empty-copy {
+  display: block;
+  margin: 12rpx auto 28rpx;
+  max-width: 520rpx;
+  font-size: 25rpx;
+  line-height: 1.6;
+}
+
+.loading-line {
+  padding: 44rpx 24rpx;
+  text-align: center;
+  color: #176b45;
+}
+
+.muted {
+  color: #788078;
+}
+
+.divider {
+  height: 1rpx;
+  background: #edf0ec;
+}
