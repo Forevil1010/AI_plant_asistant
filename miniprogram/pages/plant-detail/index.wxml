@@ -1,0 +1,99 @@
+<view wx:if="{{plant}}" class="detail-page">
+  <view class="detail-hero">
+    <image class="detail-hero__image" src="{{plant.imagePath}}" mode="aspectFill" />
+    <view class="detail-hero__overlay">
+      <text class="detail-hero__species">{{plant.name}}</text>
+      <text class="detail-hero__name">{{plant.nickname}}</text>
+      <text class="detail-hero__meta">{{plant.location}} · 自 {{acquiredLabel}} 起养护</text>
+    </view>
+  </view>
+
+  <view class="detail-content">
+    <view class="detail-toolbar">
+      <button class="toolbar-button" bindtap="editPlant">编辑档案</button>
+      <button class="toolbar-button toolbar-button--dark" bindtap="addTask">新建任务</button>
+    </view>
+
+    <view class="section">
+      <view class="section-head">
+        <text class="section-title">快速记录</text>
+        <text class="muted quick-hint">点击即保存当前时间</text>
+      </view>
+      <view class="care-action-grid">
+        <button wx:for="{{careActions}}" wx:key="type" class="care-action" data-type="{{item.type}}" bindtap="addCareRecord">
+          {{item.label}}
+        </button>
+      </view>
+    </view>
+
+    <view wx:if="{{plant.note}}" class="plant-note">
+      <text class="plant-note__label">档案备注</text>
+      <text class="plant-note__copy">{{plant.note}}</text>
+    </view>
+
+    <view class="section">
+      <view class="section-head">
+        <text class="section-title">养护时间线</text>
+        <text class="muted">{{records.length}} 条记录</text>
+      </view>
+      <view wx:if="{{records.length}}" class="timeline">
+        <view wx:for="{{records}}" wx:key="id" class="timeline-row">
+          <view class="timeline-line">
+            <text class="timeline-dot"></text>
+          </view>
+          <view class="timeline-content">
+            <view class="timeline-head">
+              <text class="timeline-title">{{item.typeLabel}}</text>
+              <text class="timeline-remove" data-id="{{item.id}}" bindtap="removeRecord">删除</text>
+            </view>
+            <text class="timeline-time">{{item.timeLabel}}</text>
+            <text wx:if="{{item.note}}" class="timeline-note">{{item.note}}</text>
+          </view>
+        </view>
+      </view>
+      <view wx:else class="empty-state card">
+        <text class="empty-title">还没有养护记录</text>
+        <text class="empty-copy">使用上方按钮记录第一次浇水或观察。</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-head">
+        <text class="section-title">养护任务</text>
+        <text class="section-action" bindtap="addTask">添加</text>
+      </view>
+      <view wx:if="{{tasks.length}}" class="detail-task-list">
+        <view wx:for="{{tasks}}" wx:key="id" class="detail-task card">
+          <view class="detail-task__head">
+            <view>
+              <text class="detail-task__title">{{item.typeLabel}}</text>
+              <text class="detail-task__time">{{item.timeLabel}} · {{item.repeatLabel}}</text>
+            </view>
+            <text class="pill {{item.status === 'pending' ? '' : 'task-status-muted'}}">{{item.statusLabel}}</text>
+          </view>
+          <text wx:if="{{item.note}}" class="detail-task__note">{{item.note}}</text>
+          <view wx:if="{{item.status === 'pending'}}" class="detail-task__actions">
+            <text data-id="{{item.id}}" bindtap="removeTask">删除</text>
+            <text data-id="{{item.id}}" bindtap="skipTask">跳过</text>
+            <button data-id="{{item.id}}" bindtap="completeTask">完成</button>
+          </view>
+        </view>
+      </view>
+      <view wx:else class="empty-state card">
+        <text class="empty-title">还没有养护任务</text>
+        <text class="empty-copy">建立一个浇水或观察计划。</text>
+      </view>
+    </view>
+
+    <view wx:if="{{knowledge}}" class="section care-guide-section">
+      <text class="section-title">品种养护参考</text>
+      <view class="care-guide">
+        <view><text>光照</text><text>{{knowledge.care.light}}</text></view>
+        <view><text>浇水</text><text>{{knowledge.care.water}}</text></view>
+        <view><text>温度</text><text>{{knowledge.care.temperature}}</text></view>
+      </view>
+    </view>
+
+    <button class="danger-button delete-plant" bindtap="removePlant">删除这株植物</button>
+  </view>
+</view>

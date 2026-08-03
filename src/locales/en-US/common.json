@@ -1,0 +1,21 @@
+{
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "success": "Success",
+  "error": "Failed",
+  "loading": "Loading...",
+  "search": "Search",
+  "add": "Add",
+  "delete": "Delete",
+  "edit": "Edit",
+  "save": "Save",
+  "water": "Water",
+  "fertilize": "Fertilize",
+  "prune": "Prune",
+  "back": "Back",
+  "ok": "OK",
+  "retry": "Retry",
+  "close": "Close",
+  "yes": "Yes",
+  "no": "No"
+}

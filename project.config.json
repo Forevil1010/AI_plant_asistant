@@ -1,0 +1,13 @@
+{
+  "description": "AI 园林助手 Taro 微信小程序",
+  "compileType": "miniprogram",
+  "libVersion": "trial",
+  "appid": "touristappid",
+  "projectname": "AI-plant-assistant",
+  "miniprogramRoot": "dist/",
+  "setting": {
+    "es6": true,
+    "postcss": true,
+    "minified": true
+  }
+}

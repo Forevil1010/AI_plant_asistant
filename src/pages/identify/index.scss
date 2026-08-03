@@ -1,0 +1,27 @@
+.identify-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin: 6px 0 28px; }
+.identify-heading > view:first-child { flex: 1; }
+.identify-heading .section-link { flex: 0 0 auto; padding-top: 8px; }
+.identify-submit { margin-top: 22px; }
+.identify-result { margin-top: 40px; padding-top: 32px; border-top: 1px solid #dfe5df; }
+.result-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 22px; }
+.result-kicker, .result-name, .result-latin { display: block; }
+.result-kicker { color: #176b45; font-size: 22px; font-weight: 600; }
+.result-name { margin-top: 7px; color: #17251d; font-size: 44px; font-weight: 700; }
+.result-latin { margin-top: 4px; color: #777f79; font-size: 22px; }
+.confidence-box { flex: 0 0 auto; width: 124px; padding: 15px 8px; border: 1px solid #c3dccd; border-radius: 8px; background: #eef6f1; text-align: center; }
+.confidence-box text { display: block; }
+.confidence-box text:first-child { color: #176b45; font-size: 30px; font-weight: 700; }
+.confidence-box text:last-child { margin-top: 3px; color: #607a6b; font-size: 19px; }
+.tag-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.result-summary { display: block; margin-top: 21px; color: #4e5b53; font-size: 25px; line-height: 1.72; }
+.care-list { margin-top: 15px; padding: 0 23px; }
+.care-row { display: grid; grid-template-columns: 82px 1fr; gap: 17px; padding: 21px 0; border-bottom: 1px solid #edf0ec; }
+.care-row:last-child { border-bottom: 0; }
+.care-row text:first-child { color: #176b45; font-size: 23px; font-weight: 650; }
+.care-row text:last-child { color: #4e5b53; font-size: 23px; line-height: 1.6; }
+.safety-note { margin-top: 23px; padding: 23px; border-left: 8px solid #d1745e; background: #fff3ef; }
+.safety-note text { display: block; }
+.safety-note text:first-child { color: #8a3e34; font-size: 24px; font-weight: 650; }
+.safety-note text:last-child { margin-top: 7px; color: #6d4e47; font-size: 22px; line-height: 1.6; }
+.result-button { margin-top: 27px; }
+.privacy-note { display: block; margin: 32px auto 0; color: #8a918b; font-size: 20px; line-height: 1.5; text-align: center; }

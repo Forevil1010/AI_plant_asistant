@@ -1,0 +1,76 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 28px;
+  font-weight: 500;
+  transition: all 0.2s;
+  border: none;
+
+  &--small {
+    height: 64px;
+    padding: 0 24px;
+    font-size: 24px;
+  }
+
+  &--medium {
+    height: 80px;
+    padding: 0 40px;
+    font-size: 28px;
+  }
+
+  &--large {
+    height: 96px;
+    padding: 0 64px;
+    font-size: 32px;
+  }
+
+  &--primary {
+    background: #4CAF50;
+    color: #fff;
+
+    &:active {
+      background: #388E3C;
+    }
+  }
+
+  &--secondary {
+    background: #fff;
+    color: #4CAF50;
+    border: 2px solid #4CAF50;
+
+    &:active {
+      background: #E8F5E9;
+    }
+  }
+
+  &--danger {
+    background: #F44336;
+    color: #fff;
+
+    &:active {
+      background: #D32F2F;
+    }
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &__loading {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

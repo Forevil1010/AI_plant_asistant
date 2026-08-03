@@ -1,0 +1,98 @@
+<view class="page diagnose-page">
+  <view class="diagnose-header">
+    <view>
+      <text class="page-title">植物哪里不舒服？</text>
+      <text class="page-subtitle">可以只上传图片、只描述症状，也可以同时提供两者。</text>
+    </view>
+    <text class="history-link" bindtap="goHistory">诊断历史</text>
+  </view>
+
+  <view class="section input-section">
+    <text class="field-label first-label">异常部位图片（选填）</text>
+    <view wx:if="{{!imagePath}}" class="compact-upload" bindtap="chooseImage">
+      <view class="compact-upload__mark">+</view>
+      <view>
+        <text class="compact-upload__title">添加一张清晰图片</text>
+        <text class="compact-upload__copy">建议拍摄叶片正反面或茎基部</text>
+      </view>
+    </view>
+    <view wx:else class="diagnose-preview card">
+      <image class="diagnose-preview__image" src="{{imagePath}}" mode="aspectFill" />
+      <view class="diagnose-preview__actions">
+        <text bindtap="chooseImage">更换</text>
+        <text class="danger-text" bindtap="removeImage">移除</text>
+      </view>
+    </view>
+
+    <text class="field-label">症状描述（选填）</text>
+    <textarea
+      class="textarea"
+      value="{{description}}"
+      maxlength="500"
+      placeholder="例如：底部叶片发黄，盆土一周都没有干，持续约 5 天……"
+      bindinput="onDescriptionInput"
+    />
+    <text class="character-count">{{description.length}} / 500</text>
+
+    <text class="field-label">关联到我的花园（选填）</text>
+    <picker mode="selector" range="{{plantOptions}}" value="{{plantIndex}}" bindchange="onPlantChange">
+      <view class="picker-field picker-arrow">{{plantOptions[plantIndex]}}</view>
+    </picker>
+  </view>
+
+  <button
+    class="primary-button diagnose-button"
+    disabled="{{(!imagePath && !description) || loading}}"
+    loading="{{loading}}"
+    bindtap="diagnose"
+  >{{loading ? '正在分析症状' : '开始诊断'}}</button>
+
+  <view wx:if="{{loading}}" class="loading-line">正在整理可能原因和处理步骤</view>
+
+  <view wx:if="{{result}}" class="diagnosis-result">
+    <view class="diagnosis-head">
+      <text class="diagnosis-kicker">智能诊断结果</text>
+      <text class="diagnosis-title">{{result.title}}</text>
+      <view class="diagnosis-meta">
+        <text class="pill">{{result.confidenceLabel}}</text>
+        <text class="severity {{severityClass}}">{{result.severity}}</text>
+      </view>
+    </view>
+
+    <view class="diagnosis-block">
+      <text class="diagnosis-block__title">判断依据</text>
+      <view wx:for="{{result.evidence}}" wx:key="*this" class="bullet-row">
+        <text class="bullet-dot"></text><text>{{item}}</text>
+      </view>
+    </view>
+
+    <view class="diagnosis-block">
+      <text class="diagnosis-block__title">可能原因</text>
+      <view wx:for="{{result.causes}}" wx:key="*this" class="number-row">
+        <text class="number-index">{{index + 1}}</text><text>{{item}}</text>
+      </view>
+    </view>
+
+    <view class="action-plan">
+      <text class="action-plan__title">现在可以这样处理</text>
+      <view wx:for="{{result.actions}}" wx:key="*this" class="action-step">
+        <text class="action-step__index">{{index + 1}}</text>
+        <text class="action-step__copy">{{item}}</text>
+      </view>
+    </view>
+
+    <view class="follow-up">
+      <text class="follow-up__label">后续观察</text>
+      <text class="follow-up__copy">{{result.followUp}}</text>
+    </view>
+
+    <view class="safety-note">
+      <text class="safety-note__title">安全提醒</text>
+      <text class="safety-note__copy">{{result.safety}}</text>
+    </view>
+  </view>
+
+  <view class="disclaimer">
+    <text>当前结果由本地模拟规则生成，仅用于验证产品流程，不能替代专业植物病理检测。</text>
+  </view>
+</view>

@@ -1,0 +1,53 @@
+<view class="profile-page">
+  <view class="profile-band">
+    <view class="profile-avatar">植</view>
+    <view>
+      <text class="profile-name">植物爱好者</text>
+      <text class="profile-mode">本地体验模式</text>
+    </view>
+    <text class="profile-status" bindtap="showCloudStatus">未连接云端</text>
+  </view>
+
+  <view class="profile-content">
+    <view class="stats-grid">
+      <view class="stat-item"><text>{{stats.plants}}</text><text>花园植物</text></view>
+      <view class="stat-item"><text>{{stats.records}}</text><text>养护记录</text></view>
+      <view class="stat-item"><text>{{stats.tasksPending}}</text><text>待办任务</text></view>
+    </view>
+
+    <view class="section">
+      <text class="section-title">使用记录</text>
+      <view class="menu-list card">
+        <view class="menu-row" bindtap="openIdentifyHistory">
+          <view><text class="menu-title">识别历史</text><text class="menu-copy">{{stats.identifications}} 条记录</text></view>
+          <text class="menu-arrow">›</text>
+        </view>
+        <view class="menu-row" bindtap="openDiagnoseHistory">
+          <view><text class="menu-title">诊断历史</text><text class="menu-copy">{{stats.diagnoses}} 条记录</text></view>
+          <text class="menu-arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title">项目设置</text>
+      <view class="menu-list card">
+        <view class="menu-row" bindtap="showCloudStatus">
+          <view><text class="menu-title">云服务与提醒</text><text class="menu-copy">尚未开通</text></view>
+          <text class="menu-arrow">›</text>
+        </view>
+        <view class="menu-row" bindtap="showPrivacy">
+          <view><text class="menu-title">隐私与数据</text><text class="menu-copy">仅保存在本机</text></view>
+          <text class="menu-arrow">›</text>
+        </view>
+        <view class="menu-row" bindtap="showAbout">
+          <view><text class="menu-title">关于项目</text><text class="menu-copy">版本 0.1.0</text></view>
+          <text class="menu-arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <button class="danger-button clear-button" bindtap="clearData">清除所有本地数据</button>
+    <text class="free-note">永久免费 · 无广告 · 当前为本地 MVP</text>
+  </view>
+</view>

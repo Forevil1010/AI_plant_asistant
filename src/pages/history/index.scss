@@ -1,0 +1,18 @@
+.identify-history { display: grid; grid-template-columns: 178px 1fr; min-height: 206px; margin-bottom: 15px; overflow: hidden; }
+.identify-history > image { width: 178px; height: 100%; min-height: 206px; background: #e5e9e5; }
+.history-body, .diagnosis-history { padding: 19px; }
+.history-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; }
+.history-head > view:first-child { min-width: 0; }
+.history-title, .history-meta, .history-summary, .history-time, .diagnosis-history__input { display: block; }
+.history-title { color: #28372e; font-size: 27px; line-height: 1.4; font-weight: 650; }
+.history-meta { margin-top: 4px; color: #176b45; font-size: 20px; }
+.history-delete { flex: 0 0 auto; color: #9a5b51; font-size: 20px; }
+.history-summary { display: -webkit-box; margin-top: 11px; overflow: hidden; color: #566159; font-size: 21px; line-height: 1.5; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.history-time { margin-top: 11px; color: #858c86; font-size: 19px; }
+.diagnosis-history { margin-bottom: 15px; }
+.diagnosis-history__image { width: 100%; height: 206px; margin-top: 17px; border-radius: 6px; background: #e5e9e5; }
+.diagnosis-history__input { margin-top: 15px; color: #566159; font-size: 22px; line-height: 1.55; }
+.diagnosis-history__advice { margin-top: 15px; padding: 17px; border-left: 6px solid #4f9870; background: #eef6f1; }
+.diagnosis-history__advice text { display: block; }
+.diagnosis-history__advice text:first-child { color: #176b45; font-size: 20px; font-weight: 650; }
+.diagnosis-history__advice text:last-child { margin-top: 5px; color: #405248; font-size: 22px; line-height: 1.55; }

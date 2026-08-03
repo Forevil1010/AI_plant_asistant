@@ -1,0 +1,10 @@
+node_modules/
+.npm-cache/
+.scratch/
+.swc/
+coverage/
+dist/
+.DS_Store
+project.private.config.json
+miniprogram_npm/
+*.log

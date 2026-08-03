@@ -1,0 +1,264 @@
+.garden-page {
+  min-height: 100vh;
+  padding-bottom: 50rpx;
+}
+
+.garden-band {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 230rpx;
+  padding: 34rpx 30rpx;
+  background: #1f3c2d;
+  color: #ffffff;
+}
+
+.garden-kicker,
+.garden-title,
+.garden-copy {
+  display: block;
+}
+
+.garden-kicker {
+  color: #9ec8af;
+  font-size: 21rpx;
+  font-weight: 650;
+}
+
+.garden-title {
+  margin-top: 8rpx;
+  font-size: 44rpx;
+  font-weight: 700;
+}
+
+.garden-copy {
+  margin-top: 10rpx;
+  color: #d2e2d8;
+  font-size: 24rpx;
+}
+
+.garden-add {
+  height: 68rpx;
+  margin: 0;
+  padding: 0 22rpx;
+  border: 1rpx solid #9fc3ad;
+  border-radius: 8rpx;
+  background: transparent;
+  color: #ffffff;
+  font-size: 24rpx;
+  line-height: 68rpx;
+}
+
+.garden-content {
+  padding: 24rpx 28rpx 0;
+}
+
+.segment-control {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 6rpx;
+  border: 1rpx solid #dfe4df;
+  border-radius: 8rpx;
+  background: #edf0ec;
+}
+
+.segment-item {
+  min-height: 66rpx;
+  border-radius: 6rpx;
+  color: #6b746e;
+  font-size: 25rpx;
+  line-height: 66rpx;
+  text-align: center;
+}
+
+.segment-item--active {
+  background: #ffffff;
+  color: #176b45;
+  box-shadow: 0 2rpx 8rpx rgba(25, 50, 34, 0.08);
+  font-weight: 650;
+}
+
+.plant-list,
+.garden-task-list {
+  margin-top: 22rpx;
+}
+
+.plant-card {
+  display: grid;
+  grid-template-columns: 210rpx 1fr;
+  min-height: 230rpx;
+  margin-bottom: 18rpx;
+  overflow: hidden;
+}
+
+.plant-card__image {
+  width: 210rpx;
+  height: 100%;
+  min-height: 230rpx;
+  background: #e5e9e5;
+}
+
+.plant-card__body {
+  min-width: 0;
+  padding: 20rpx;
+}
+
+.plant-card__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10rpx;
+}
+
+.plant-card__name,
+.plant-card__species,
+.plant-card__care {
+  display: block;
+}
+
+.plant-card__name {
+  color: #223128;
+  font-size: 31rpx;
+  font-weight: 650;
+}
+
+.plant-card__species {
+  margin-top: 5rpx;
+  color: #717a73;
+  font-size: 22rpx;
+}
+
+.plant-card__arrow {
+  color: #8b928d;
+  font-size: 42rpx;
+  line-height: 36rpx;
+}
+
+.plant-card__care {
+  margin-top: 17rpx;
+  overflow: hidden;
+  color: #576159;
+  font-size: 22rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plant-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10rpx;
+  margin-top: 18rpx;
+}
+
+.water-button {
+  width: 116rpx;
+  height: 54rpx;
+  margin: 0;
+  padding: 0;
+  border-radius: 8rpx;
+  background: #176b45;
+  color: #ffffff;
+  font-size: 21rpx;
+  line-height: 54rpx;
+}
+
+.garden-empty {
+  margin-top: 22rpx;
+}
+
+.empty-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 74rpx;
+  height: 74rpx;
+  margin: 0 auto 20rpx;
+  border-radius: 50%;
+  background: #e4f1e9;
+  color: #176b45;
+  font-size: 44rpx;
+}
+
+.task-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 86rpx;
+  font-size: 23rpx;
+}
+
+.task-add-button {
+  height: 58rpx;
+  margin: 0;
+  padding: 0 20rpx;
+  border-radius: 8rpx;
+  background: #1f2923;
+  color: #ffffff;
+  font-size: 23rpx;
+  line-height: 58rpx;
+}
+
+.garden-task {
+  margin-bottom: 16rpx;
+  padding: 24rpx;
+}
+
+.garden-task__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.garden-task__title,
+.garden-task__time,
+.garden-task__note {
+  display: block;
+}
+
+.garden-task__title {
+  color: #28362d;
+  font-size: 29rpx;
+  font-weight: 650;
+}
+
+.garden-task__time {
+  margin-top: 6rpx;
+  color: #6f7871;
+  font-size: 23rpx;
+}
+
+.garden-task__note {
+  margin-top: 16rpx;
+  color: #59645d;
+  font-size: 23rpx;
+  line-height: 1.5;
+}
+
+.garden-task__actions {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 12rpx;
+  margin-top: 22rpx;
+}
+
+.task-skip,
+.task-complete {
+  height: 66rpx;
+  margin: 0;
+  padding: 0;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  line-height: 66rpx;
+}
+
+.task-skip {
+  border: 1rpx solid #d8deda;
+  background: #ffffff;
+  color: #69716b;
+}
+
+.task-complete {
+  background: #176b45;
+  color: #ffffff;
+}

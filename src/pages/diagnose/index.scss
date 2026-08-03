@@ -1,0 +1,30 @@
+.diagnose-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin: 6px 0 24px; }
+.diagnose-heading > view:first-child { flex: 1; }
+.diagnose-heading .section-link { flex: 0 0 auto; padding-top: 8px; }
+.character-count { display: block; margin-top: 6px; color: #909790; font-size: 20px; text-align: right; }
+.diagnose-submit { margin-top: 28px; }
+.diagnosis-result { margin-top: 40px; padding-top: 32px; border-top: 1px solid #dfe5df; }
+.diagnosis-kicker, .diagnosis-title { display: block; }
+.diagnosis-kicker { color: #176b45; font-size: 22px; font-weight: 650; }
+.diagnosis-title { margin-top: 9px; color: #17251d; font-size: 37px; line-height: 1.35; font-weight: 700; }
+.diagnosis-meta { display: flex; gap: 11px; margin-top: 17px; }
+.severity { display: inline-flex; align-items: center; min-height: 40px; padding: 0 15px; border-radius: 999px; font-size: 21px; }
+.severity--mild { background: #edf3ea; color: #517248; }
+.severity--moderate { background: #fff2d5; color: #8a5b00; }
+.severity--severe { background: #fde8e3; color: #9c3f34; }
+.diagnosis-block { padding: 25px 0; border-top: 1px solid #e3e7e2; }
+.diagnosis-block__title { display: block; margin-bottom: 17px; color: #26362c; font-size: 28px; font-weight: 650; }
+.bullet-row, .number-row { display: flex; align-items: flex-start; gap: 13px; margin-top: 13px; color: #4d5a52; font-size: 24px; line-height: 1.6; }
+.bullet-dot { flex: 0 0 auto; width: 10px; height: 10px; margin-top: 15px; border-radius: 50%; background: #4f9870; }
+.number-row > text:first-child { display: flex; flex: 0 0 auto; align-items: center; justify-content: center; width: 34px; height: 34px; margin-top: 2px; border: 1px solid #b9d4c4; border-radius: 50%; color: #176b45; font-size: 19px; }
+.action-plan { padding: 25px; border-radius: 8px; background: #eaf4ee; }
+.action-step { display: grid; grid-template-columns: 38px 1fr; gap: 13px; margin-top: 17px; }
+.action-step > text:first-child { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 6px; background: #176b45; color: #fff; font-size: 20px; }
+.action-step > text:last-child { color: #31473a; font-size: 24px; line-height: 1.6; }
+.follow-up, .safety-note { margin-top: 21px; padding: 23px; }
+.follow-up { border: 1px solid #dfe4df; border-radius: 8px; background: #fff; }
+.safety-note { border-left: 8px solid #d1745e; background: #fff3ef; }
+.follow-up text, .safety-note text { display: block; }
+.follow-up text:first-child, .safety-note text:first-child { color: #35423a; font-size: 24px; font-weight: 650; }
+.follow-up text:last-child, .safety-note text:last-child { margin-top: 7px; color: #59645d; font-size: 22px; line-height: 1.65; }
+.diagnosis-disclaimer { display: block; margin-top: 32px; color: #878e88; font-size: 20px; line-height: 1.6; text-align: center; }

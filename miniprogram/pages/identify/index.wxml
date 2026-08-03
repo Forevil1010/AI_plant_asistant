@@ -1,0 +1,76 @@
+<view class="page identify-page">
+  <view class="page-header identify-header">
+    <view>
+      <text class="page-title">拍一张植物照片</text>
+      <text class="page-subtitle">尽量包含完整叶片或花朵，使用自然光并保持画面清晰。</text>
+    </view>
+    <text class="history-link" bindtap="goHistory">识别历史</text>
+  </view>
+
+  <view wx:if="{{!imagePath}}" class="upload-panel card" bindtap="chooseImage">
+    <view class="upload-mark">+</view>
+    <text class="upload-title">拍照或从相册选择</text>
+    <text class="upload-copy">支持 JPG、PNG 等微信可读取图片</text>
+  </view>
+
+  <view wx:else class="preview-panel card">
+    <image class="preview-image" src="{{imagePath}}" mode="aspectFill" />
+    <view class="preview-actions">
+      <button class="preview-action" bindtap="chooseImage">更换图片</button>
+      <button class="preview-action preview-action--danger" bindtap="removeImage">移除</button>
+    </view>
+  </view>
+
+  <button
+    class="primary-button analyze-button"
+    disabled="{{!imagePath || loading}}"
+    loading="{{loading}}"
+    bindtap="analyze"
+  >{{loading ? '正在分析图片' : '开始识别'}}</button>
+
+  <view wx:if="{{loading}}" class="analysis-state">
+    <text class="analysis-state__title">正在比对植物特征</text>
+    <text class="analysis-state__copy">当前为本地模拟服务，未来会替换为真实识别 API。</text>
+  </view>
+
+  <view wx:if="{{result}}" class="result-section">
+    <view class="result-heading">
+      <view>
+        <text class="result-kicker">最可能的结果</text>
+        <text class="result-name">{{result.name}}</text>
+        <text class="result-latin">{{result.latinName}}</text>
+      </view>
+      <view class="confidence-box">
+        <text class="confidence-value">{{confidenceText}}</text>
+        <text class="confidence-label">可信度</text>
+      </view>
+    </view>
+
+    <view class="tag-row">
+      <text wx:for="{{result.tags}}" wx:key="*this" class="pill">{{item}}</text>
+    </view>
+
+    <text class="result-summary">{{result.summary}}</text>
+
+    <view class="section">
+      <text class="section-title">养护建议</text>
+      <view class="care-list card">
+        <view class="care-row"><text class="care-label">光照</text><text class="care-value">{{result.care.light}}</text></view>
+        <view class="care-row"><text class="care-label">浇水</text><text class="care-value">{{result.care.water}}</text></view>
+        <view class="care-row"><text class="care-label">温度</text><text class="care-value">{{result.care.temperature}}</text></view>
+        <view class="care-row"><text class="care-label">土壤</text><text class="care-value">{{result.care.soil}}</text></view>
+        <view class="care-row"><text class="care-label">施肥</text><text class="care-value">{{result.care.fertilizer}}</text></view>
+      </view>
+    </view>
+
+    <view class="safety-note">
+      <text class="safety-note__title">人宠安全</text>
+      <text class="safety-note__copy">{{result.safety}}</text>
+    </view>
+
+    <button wx:if="{{!added}}" class="primary-button result-button" bindtap="addToGarden">加入我的花园</button>
+    <button wx:else class="secondary-button result-button" bindtap="goGarden">已加入，查看花园</button>
+  </view>
+
+  <text class="privacy-copy">提交图片即表示你同意将其用于本次模拟识别。当前图片仅保存在本机。</text>
+</view>

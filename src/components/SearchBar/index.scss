@@ -1,0 +1,29 @@
+.search-bar {
+  display: grid;
+  grid-template-columns: 1fr 124px;
+  gap: 12px;
+
+  &__input {
+    height: 78px;
+    padding: 0 22px;
+    border: 1px solid #d9dfda;
+    border-radius: 8px;
+    background: #ffffff;
+    font-size: 26px;
+  }
+
+  &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 124px;
+    height: 78px;
+    margin: 0;
+    padding: 0;
+    border-radius: 8px;
+    background: #1f2923;
+    color: #ffffff;
+    font-size: 25px;
+    line-height: 78px;
+  }
+}

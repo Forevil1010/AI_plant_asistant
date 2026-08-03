@@ -1,0 +1,59 @@
+name: CI
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check TypeScript
+        run: npm run typecheck
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Build H5
+        run: npm run build:h5
+
+      - name: Upload H5 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: h5-dist
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Build WeChat Mini Program
+        run: npm run build:weapp
+
+      - name: Upload WeChat Mini Program artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: weapp-dist
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7

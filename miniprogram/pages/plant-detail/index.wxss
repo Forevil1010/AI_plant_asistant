@@ -1,0 +1,279 @@
+.detail-page {
+  min-height: 100vh;
+  padding-bottom: 52rpx;
+}
+
+.detail-hero {
+  position: relative;
+  height: 420rpx;
+  overflow: hidden;
+  background: #dfe5df;
+}
+
+.detail-hero__image {
+  width: 100%;
+  height: 100%;
+}
+
+.detail-hero__overlay {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 60rpx 30rpx 28rpx;
+  background: rgba(20, 31, 24, 0.82);
+  color: #ffffff;
+}
+
+.detail-hero__species,
+.detail-hero__name,
+.detail-hero__meta {
+  display: block;
+}
+
+.detail-hero__species {
+  color: #d4e6da;
+  font-size: 23rpx;
+}
+
+.detail-hero__name {
+  margin-top: 5rpx;
+  font-size: 43rpx;
+  font-weight: 700;
+}
+
+.detail-hero__meta {
+  margin-top: 8rpx;
+  color: #e1ebe4;
+  font-size: 23rpx;
+}
+
+.detail-content {
+  padding: 22rpx 28rpx 0;
+}
+
+.detail-toolbar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12rpx;
+}
+
+.toolbar-button {
+  height: 72rpx;
+  margin: 0;
+  padding: 0;
+  border: 1rpx solid #cfd7d1;
+  border-radius: 8rpx;
+  background: #ffffff;
+  color: #176b45;
+  font-size: 25rpx;
+  line-height: 72rpx;
+}
+
+.toolbar-button--dark {
+  border-color: #1f2923;
+  background: #1f2923;
+  color: #ffffff;
+}
+
+.quick-hint {
+  font-size: 21rpx;
+}
+
+.care-action-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12rpx;
+}
+
+.care-action {
+  height: 74rpx;
+  margin: 0;
+  padding: 0;
+  border: 1rpx solid #c8d9ce;
+  border-radius: 8rpx;
+  background: #eef6f1;
+  color: #176b45;
+  font-size: 24rpx;
+  line-height: 74rpx;
+}
+
+.plant-note {
+  margin-top: 30rpx;
+  padding: 22rpx 24rpx;
+  border-left: 8rpx solid #e1a63b;
+  background: #fff8e8;
+}
+
+.plant-note__label,
+.plant-note__copy {
+  display: block;
+}
+
+.plant-note__label {
+  color: #7e5707;
+  font-size: 23rpx;
+  font-weight: 650;
+}
+
+.plant-note__copy {
+  margin-top: 7rpx;
+  color: #62543a;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.timeline-row {
+  display: grid;
+  grid-template-columns: 34rpx 1fr;
+  min-height: 116rpx;
+}
+
+.timeline-line {
+  position: relative;
+  border-left: 2rpx solid #cbd9cf;
+}
+
+.timeline-dot {
+  position: absolute;
+  top: 10rpx;
+  left: -9rpx;
+  width: 16rpx;
+  height: 16rpx;
+  border: 4rpx solid #e8f3ec;
+  border-radius: 50%;
+  background: #176b45;
+}
+
+.timeline-content {
+  padding: 0 0 28rpx 16rpx;
+}
+
+.timeline-head {
+  display: flex;
+  justify-content: space-between;
+}
+
+.timeline-title,
+.timeline-time,
+.timeline-note {
+  display: block;
+}
+
+.timeline-title {
+  color: #2c3a31;
+  font-size: 27rpx;
+  font-weight: 650;
+}
+
+.timeline-remove {
+  color: #9a5b51;
+  font-size: 22rpx;
+}
+
+.timeline-time {
+  margin-top: 4rpx;
+  color: #747c76;
+  font-size: 22rpx;
+}
+
+.timeline-note {
+  margin-top: 7rpx;
+  color: #59645d;
+  font-size: 23rpx;
+}
+
+.detail-task {
+  margin-bottom: 14rpx;
+  padding: 22rpx;
+}
+
+.detail-task__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18rpx;
+}
+
+.detail-task__title,
+.detail-task__time,
+.detail-task__note {
+  display: block;
+}
+
+.detail-task__title {
+  color: #29382f;
+  font-size: 28rpx;
+  font-weight: 650;
+}
+
+.detail-task__time {
+  margin-top: 5rpx;
+  color: #707971;
+  font-size: 22rpx;
+}
+
+.detail-task__note {
+  margin-top: 14rpx;
+  color: #59645d;
+  font-size: 23rpx;
+}
+
+.task-status-muted {
+  background: #edf0ed;
+  color: #777e78;
+}
+
+.detail-task__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 28rpx;
+  margin-top: 18rpx;
+  color: #7d5a52;
+  font-size: 23rpx;
+}
+
+.detail-task__actions button {
+  width: 104rpx;
+  height: 56rpx;
+  margin: 0;
+  padding: 0;
+  border-radius: 8rpx;
+  background: #176b45;
+  color: #ffffff;
+  font-size: 22rpx;
+  line-height: 56rpx;
+}
+
+.care-guide-section {
+  padding: 26rpx;
+  border-radius: 8rpx;
+  background: #e9f2ec;
+}
+
+.care-guide {
+  margin-top: 16rpx;
+}
+
+.care-guide view {
+  display: grid;
+  grid-template-columns: 74rpx 1fr;
+  gap: 16rpx;
+  padding: 14rpx 0;
+}
+
+.care-guide view text:first-child {
+  color: #176b45;
+  font-size: 23rpx;
+  font-weight: 650;
+}
+
+.care-guide view text:last-child {
+  color: #45584b;
+  font-size: 23rpx;
+  line-height: 1.55;
+}
+
+.delete-plant {
+  margin-top: 38rpx;
+}
