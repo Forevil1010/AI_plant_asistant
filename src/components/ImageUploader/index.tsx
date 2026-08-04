@@ -1,6 +1,7 @@
 import React from 'react'
 import Taro from '@tarojs/taro'
 import { Image, Text, View } from '@tarojs/components'
+import { compressImage } from '../../utils/image'
 import './index.scss'
 
 interface ImageUploaderProps {
@@ -8,6 +9,7 @@ interface ImageUploaderProps {
   title?: string
   hint?: string
   compact?: boolean
+  compress?: boolean
   onSelect: (imagePath: string) => void
   onRemove?: () => void
 }
@@ -17,6 +19,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   title = '拍照或从相册选择',
   hint = '尽量保持主体完整、光线自然、画面清晰',
   compact = false,
+  compress = true,
   onSelect,
   onRemove
 }) => {
@@ -27,7 +30,13 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         sizeType: ['compressed'],
         sourceType: ['album', 'camera']
       })
-      if (result.tempFilePaths[0]) onSelect(result.tempFilePaths[0])
+      if (result.tempFilePaths[0]) {
+        let path = result.tempFilePaths[0]
+        if (compress) {
+          path = await compressImage(path, { maxWidth: 1280, quality: 0.8 })
+        }
+        onSelect(path)
+      }
     } catch (error) {
       if (!String(error).includes('cancel')) {
         Taro.showToast({ title: '无法读取图片，请检查权限', icon: 'none' })

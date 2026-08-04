@@ -8,3 +8,5 @@ dist/
 project.private.config.json
 miniprogram_npm/
 *.log
+.env
+server/.env

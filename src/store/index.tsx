@@ -61,6 +61,7 @@ type Action =
   | { type: 'SAVE_TASK'; task: CareTask }
   | { type: 'REMOVE_TASK'; id: string }
   | { type: 'FINISH_TASK'; id: string; status: Extract<TaskStatus, 'done' | 'skipped'> }
+  | { type: 'SNOOZE_TASK'; id: string; days?: number }
   | { type: 'ADD_IDENTIFY_HISTORY'; item: IdentifyHistory }
   | { type: 'REMOVE_IDENTIFY_HISTORY'; id: string }
   | { type: 'ADD_DIAGNOSIS_HISTORY'; item: DiagnosisHistory }
@@ -155,6 +156,19 @@ function reducer(state: AppState, action: Action): AppState {
       persist('careTasks', careTasks)
       return { ...state, careTasks, careRecords }
     }
+    case 'SNOOZE_TASK': {
+      const task = state.careTasks.find((item) => item.id === action.id)
+      if (!task || task.status !== 'pending') return state
+      const days = action.days ?? 1
+      const newDueAt = new Date(task.dueAt)
+      if (Number.isNaN(newDueAt.getTime())) return state
+      newDueAt.setDate(newDueAt.getDate() + days)
+      const careTasks = state.careTasks.map((item) =>
+        item.id === task.id ? { ...item, dueAt: newDueAt.toISOString() } : item
+      )
+      persist('careTasks', careTasks)
+      return { ...state, careTasks }
+    }
     case 'ADD_IDENTIFY_HISTORY': {
       const identifyHistory = [action.item, ...state.identifyHistory].slice(0, 50)
       persist('identifyHistory', identifyHistory)
@@ -193,6 +207,7 @@ interface AppContextValue {
   saveCareTask: (task: CareTask) => void
   removeCareTask: (id: string) => void
   finishCareTask: (id: string, status: Extract<TaskStatus, 'done' | 'skipped'>) => void
+  snoozeCareTask: (id: string, days?: number) => void
   addIdentifyHistory: (item: IdentifyHistory) => void
   removeIdentifyHistory: (id: string) => void
   addDiagnosisHistory: (item: DiagnosisHistory) => void
@@ -211,6 +226,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const saveCareTask = useCallback((task: CareTask) => dispatch({ type: 'SAVE_TASK', task }), [])
   const removeCareTask = useCallback((id: string) => dispatch({ type: 'REMOVE_TASK', id }), [])
   const finishCareTask = useCallback((id: string, status: Extract<TaskStatus, 'done' | 'skipped'>) => dispatch({ type: 'FINISH_TASK', id, status }), [])
+  const snoozeCareTask = useCallback((id: string, days?: number) => dispatch({ type: 'SNOOZE_TASK', id, days }), [])
   const addIdentifyHistory = useCallback((item: IdentifyHistory) => dispatch({ type: 'ADD_IDENTIFY_HISTORY', item }), [])
   const removeIdentifyHistory = useCallback((id: string) => dispatch({ type: 'REMOVE_IDENTIFY_HISTORY', id }), [])
   const addDiagnosisHistory = useCallback((item: DiagnosisHistory) => dispatch({ type: 'ADD_DIAGNOSIS_HISTORY', item }), [])
@@ -226,6 +242,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     saveCareTask,
     removeCareTask,
     finishCareTask,
+    snoozeCareTask,
     addIdentifyHistory,
     removeIdentifyHistory,
     addDiagnosisHistory,
@@ -240,6 +257,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     saveCareTask,
     removeCareTask,
     finishCareTask,
+    snoozeCareTask,
     addIdentifyHistory,
     removeIdentifyHistory,
     addDiagnosisHistory,

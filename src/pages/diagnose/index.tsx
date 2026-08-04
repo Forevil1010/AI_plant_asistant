@@ -3,7 +3,7 @@ import Taro from '@tarojs/taro'
 import { Button, Picker, Text, Textarea, View } from '@tarojs/components'
 import ImageUploader from '../../components/ImageUploader'
 import Loading from '../../components/Loading'
-import { diagnosePlant } from '../../services/mock-ai'
+import { diagnosePlant } from '../../services/ai-service'
 import { createId, useApp } from '../../store'
 import { DiagnosisResult } from '../../types'
 import './index.scss'
@@ -31,7 +31,7 @@ const Diagnose: React.FC = () => {
     setLoading(true)
     setResult(null)
     try {
-      const diagnosed = await diagnosePlant(description, Boolean(imageUrl))
+      const diagnosed = await diagnosePlant(description, Boolean(imageUrl), imageUrl || undefined)
       setResult(diagnosed)
       addDiagnosisHistory({
         id: createId('diagnosis'),

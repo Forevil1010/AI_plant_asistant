@@ -7,7 +7,7 @@ import { careTypeLabels } from '../../utils/labels'
 import './index.scss'
 
 const Garden: React.FC = () => {
-  const { state, addCareRecord, finishCareTask } = useApp()
+  const { state, addCareRecord, finishCareTask, snoozeCareTask } = useApp()
   const [activeTab, setActiveTab] = useState<'plants' | 'tasks'>('plants')
   const pendingTasks = useMemo(() => state.careTasks.filter((task) => task.status === 'pending').sort((a, b) => a.dueAt.localeCompare(b.dueAt)), [state.careTasks])
 
@@ -22,6 +22,20 @@ const Garden: React.FC = () => {
   const quickWater = (plantId: string) => {
     addCareRecord({ id: createId('record'), plantId, type: 'water', note: '快捷记录', createdAt: new Date().toISOString() })
     Taro.showToast({ title: '已记录浇水', icon: 'success' })
+  }
+
+  const snoozeTask = (id: string) => {
+    Taro.showActionSheet({
+      itemList: ['延后 1 天', '延后 3 天', '延后 7 天'],
+      success: (res) => {
+        if (res.tapIndex === undefined || res.tapIndex < 0) return
+        const days = [1, 3, 7][res.tapIndex]
+        if (!days) return
+        snoozeCareTask(id, days)
+        Taro.showToast({ title: `已延后 ${days} 天`, icon: 'success' })
+      },
+      fail: () => {}
+    })
   }
 
   return (
@@ -68,7 +82,7 @@ const Garden: React.FC = () => {
                   <View key={task.id} className='garden-task card'>
                     <View className='garden-task__head'><View><Text className='garden-task__title'>{careTypeLabels[task.type]} · {plant?.nickname || plant?.name || '已删除植物'}</Text><Text className='garden-task__time'>{formatDateTime(task.dueAt)}</Text></View><Text className={`pill ${isOverdue(task.dueAt) ? 'pill-warning' : ''}`}>{isOverdue(task.dueAt) ? '已逾期' : '待完成'}</Text></View>
                     {task.note && <Text className='garden-task__note'>{task.note}</Text>}
-                    <View className='garden-task__actions'><Button onClick={() => finishCareTask(task.id, 'skipped')}>跳过</Button><Button onClick={() => { finishCareTask(task.id, 'done'); Taro.showToast({ title: '任务已完成', icon: 'success' }) }}>完成任务</Button></View>
+                    <View className='garden-task__actions'><Button onClick={() => finishCareTask(task.id, 'skipped')}>跳过</Button><Button className='btn-secondary' onClick={() => snoozeTask(task.id)}>延后</Button><Button onClick={() => { finishCareTask(task.id, 'done'); Taro.showToast({ title: '任务已完成', icon: 'success' }) }}>完成任务</Button></View>
                   </View>
                 )
               })}</View>
