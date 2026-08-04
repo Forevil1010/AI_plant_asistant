@@ -1,23 +1,16 @@
 import Taro from '@tarojs/taro'
-import { DiagnosisResult, PlantKnowledge } from '../types'
+import { AiResultSource, DiagnosisResult, PlantKnowledge } from '../types'
 import { identifyPlant as mockIdentify, diagnosePlant as mockDiagnose } from './mock-ai'
 import { fileToBase64 } from '../utils/image'
 
-const BASE_URL =
-  (typeof process !== 'undefined' && process.env && process.env.API_BASE_URL) ||
-  'http://localhost:3000/api'
-
-const USE_MOCK =
-  typeof process !== 'undefined' && process.env && process.env.USE_MOCK === 'true'
-
-function isH5(): boolean {
-  if (typeof process !== 'undefined' && process.env && process.env.TARO_ENV) {
-    return process.env.TARO_ENV === 'h5'
-  }
-  return typeof window !== 'undefined'
-}
+const BASE_URL = __API_BASE_URL__.replace(/\/$/, '')
+const USE_MOCK = __USE_MOCK__ || !BASE_URL
 
 async function request<T>(url: string, data: Record<string, unknown>): Promise<T> {
+  if (!BASE_URL) {
+    throw new Error('未配置 AI 服务地址')
+  }
+
   const response = await Taro.request<{ code: number; message: string; data: T }>({
     url: `${BASE_URL}${url}`,
     method: 'POST',
@@ -42,12 +35,24 @@ export interface IdentifyResponse {
   candidates: PlantKnowledge[]
   isFallback?: boolean
   isMock?: boolean
+  source: AiResultSource
+}
+
+export interface DiagnosisResponse {
+  result: DiagnosisResult
+  source: AiResultSource
+}
+
+function getResultSource(result: { isMock?: boolean; isFallback?: boolean }): AiResultSource {
+  if (result.isFallback) return 'fallback'
+  if (result.isMock) return 'mock'
+  return 'ai'
 }
 
 export async function identifyPlant(imagePath: string): Promise<IdentifyResponse> {
   if (USE_MOCK) {
     const result = await mockIdentify(imagePath)
-    return { result, candidates: [] }
+    return { result, candidates: [], isMock: true, source: 'mock' }
   }
 
   try {
@@ -61,16 +66,11 @@ export async function identifyPlant(imagePath: string): Promise<IdentifyResponse
       throw new Error('未识别到植物')
     }
 
-    if (result.isFallback) {
-      Taro.showToast({ title: 'AI 服务暂不可用，展示模拟结果', icon: 'none' })
-    }
-
-    return result
+    return { ...result, source: getResultSource(result) }
   } catch (error) {
-    console.warn('AI 识别失败，降级为模拟识别:', error)
     Taro.showToast({ title: '连接失败，展示模拟结果', icon: 'none' })
     const result = await mockIdentify(imagePath)
-    return { result, candidates: [] }
+    return { result, candidates: [], isFallback: true, source: 'fallback' }
   }
 }
 
@@ -78,9 +78,9 @@ export async function diagnosePlant(
   description: string,
   hasImage: boolean,
   imagePath?: string
-): Promise<DiagnosisResult> {
+): Promise<DiagnosisResponse> {
   if (USE_MOCK) {
-    return mockDiagnose(description, hasImage)
+    return { result: await mockDiagnose(description, hasImage), source: 'mock' }
   }
 
   try {
@@ -95,14 +95,9 @@ export async function diagnosePlant(
       data
     )
 
-    if (result.isFallback) {
-      Taro.showToast({ title: 'AI 服务暂不可用，展示模拟结果', icon: 'none' })
-    }
-
-    return result.result
+    return { result: result.result, source: getResultSource(result) }
   } catch (error) {
-    console.warn('AI 诊断失败，降级为模拟诊断:', error)
     Taro.showToast({ title: '连接失败，展示模拟结果', icon: 'none' })
-    return mockDiagnose(description, hasImage)
+    return { result: await mockDiagnose(description, hasImage), source: 'fallback' }
   }
 }

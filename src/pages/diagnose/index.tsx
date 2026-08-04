@@ -5,7 +5,7 @@ import ImageUploader from '../../components/ImageUploader'
 import Loading from '../../components/Loading'
 import { diagnosePlant } from '../../services/ai-service'
 import { createId, useApp } from '../../store'
-import { DiagnosisResult } from '../../types'
+import { AiResultSource, DiagnosisResult } from '../../types'
 import './index.scss'
 
 const severityClassNames: Record<DiagnosisResult['severity'], string> = {
@@ -21,6 +21,7 @@ const Diagnose: React.FC = () => {
   const [plantIndex, setPlantIndex] = useState(0)
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<DiagnosisResult | null>(null)
+  const [resultSource, setResultSource] = useState<AiResultSource | null>(null)
   const plantOptions = useMemo(() => ['不关联花园植物', ...state.gardenPlants.map((plant) => plant.nickname || plant.name)], [state.gardenPlants])
 
   const diagnose = async () => {
@@ -30,14 +31,17 @@ const Diagnose: React.FC = () => {
     }
     setLoading(true)
     setResult(null)
+    setResultSource(null)
     try {
-      const diagnosed = await diagnosePlant(description, Boolean(imageUrl), imageUrl || undefined)
-      setResult(diagnosed)
+      const response = await diagnosePlant(description, Boolean(imageUrl), imageUrl || undefined)
+      setResult(response.result)
+      setResultSource(response.source)
       addDiagnosisHistory({
         id: createId('diagnosis'),
         imageUrl: imageUrl || undefined,
         description: description.trim(),
-        result: diagnosed,
+        result: response.result,
+        source: response.source,
         plantId: plantIndex > 0 ? state.gardenPlants[plantIndex - 1]?.id : undefined,
         createdAt: new Date().toISOString()
       })
@@ -56,10 +60,10 @@ const Diagnose: React.FC = () => {
       </View>
 
       <Text className='field-label'>异常部位图片（选填）</Text>
-      <ImageUploader compact value={imageUrl} title='添加一张清晰图片' hint='建议拍摄叶片正反面或茎基部' onSelect={(path) => { setImageUrl(path); setResult(null) }} onRemove={() => { setImageUrl(''); setResult(null) }} />
+      <ImageUploader compact value={imageUrl} title='添加一张清晰图片' hint='建议拍摄叶片正反面或茎基部' onSelect={(path) => { setImageUrl(path); setResult(null); setResultSource(null) }} onRemove={() => { setImageUrl(''); setResult(null); setResultSource(null) }} />
 
       <Text className='field-label'>症状描述（选填）</Text>
-      <Textarea className='field-textarea' value={description} maxlength={500} placeholder='例如：底部叶片发黄，盆土一周都没有干，持续约 5 天……' onInput={(event) => { setDescription(event.detail.value); setResult(null) }} />
+      <Textarea className='field-textarea' value={description} maxlength={500} placeholder='例如：底部叶片发黄，盆土一周都没有干，持续约 5 天……' onInput={(event) => { setDescription(event.detail.value); setResult(null); setResultSource(null) }} />
       <Text className='character-count'>{description.length} / 500</Text>
 
       <Text className='field-label'>关联到我的花园（选填）</Text>
@@ -74,6 +78,11 @@ const Diagnose: React.FC = () => {
 
       {result && (
         <View className='diagnosis-result'>
+          {resultSource && (
+            <View className={`result-source result-source--${resultSource}`}>
+              <Text>{resultSource === 'ai' ? '真实 AI 结果' : resultSource === 'mock' ? '本地模拟结果' : 'AI 不可用，当前为模拟结果'}</Text>
+            </View>
+          )}
           <Text className='diagnosis-kicker'>智能诊断结果</Text>
           <Text className='diagnosis-title'>{result.title}</Text>
           <View className='diagnosis-meta'><Text className='pill'>{result.confidenceLabel}</Text><Text className={`severity severity--${severityClassNames[result.severity]}`}>{result.severity}</Text></View>
@@ -86,7 +95,7 @@ const Diagnose: React.FC = () => {
         </View>
       )}
 
-      <Text className='diagnosis-disclaimer'>当前结果由本地模拟规则生成，仅用于验证产品流程，不能替代专业植物病理检测。</Text>
+      <Text className='diagnosis-disclaimer'>诊断结果仅供植物养护参考，不能替代专业植物病理检测。真实 AI 模式下，图片和文字会发送至项目后端及已配置的第三方 AI 服务处理。</Text>
     </View>
   )
 }

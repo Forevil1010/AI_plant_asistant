@@ -53,7 +53,7 @@ function persist<K extends keyof AppState>(key: K, value: AppState[K]): void {
   Taro.setStorageSync(STORAGE_KEYS[key], value)
 }
 
-type Action =
+export type Action =
   | { type: 'SAVE_PLANT'; plant: GardenPlant }
   | { type: 'REMOVE_PLANT'; id: string }
   | { type: 'ADD_RECORD'; record: CareRecord }
@@ -82,7 +82,7 @@ function getNextDueAt(task: CareTask): string | undefined {
   return next.toISOString()
 }
 
-function reducer(state: AppState, action: Action): AppState {
+export function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case 'SAVE_PLANT': {
       const exists = state.gardenPlants.some((plant) => plant.id === action.plant.id)

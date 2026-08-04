@@ -1,6 +1,7 @@
 export type CareType = 'water' | 'fertilize' | 'prune' | 'repot' | 'medicine' | 'observe'
 export type TaskStatus = 'pending' | 'done' | 'skipped'
 export type RepeatRule = 'none' | 'daily' | 'weekly' | 'monthly'
+export type AiResultSource = 'ai' | 'mock' | 'fallback'
 
 export interface PlantCareGuide {
   light: string
@@ -59,6 +60,7 @@ export interface IdentifyHistory {
   id: string
   imageUrl: string
   result: PlantKnowledge
+  source?: AiResultSource
   createdAt: string
 }
 
@@ -78,6 +80,7 @@ export interface DiagnosisHistory {
   imageUrl?: string
   description: string
   result: DiagnosisResult
+  source?: AiResultSource
   createdAt: string
   plantId?: string
 }

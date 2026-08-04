@@ -5,7 +5,7 @@ import ImageUploader from '../../components/ImageUploader'
 import Loading from '../../components/Loading'
 import { identifyPlant, IdentifyResponse } from '../../services/ai-service'
 import { useApp, createId } from '../../store'
-import { PlantKnowledge } from '../../types'
+import { AiResultSource, PlantKnowledge } from '../../types'
 import './index.scss'
 
 const LOW_CONFIDENCE_THRESHOLD = 0.7
@@ -19,6 +19,7 @@ const Identify: React.FC = () => {
   const [isLowConfidence, setIsLowConfidence] = useState(false)
   const [added, setAdded] = useState(false)
   const [showCandidates, setShowCandidates] = useState(false)
+  const [resultSource, setResultSource] = useState<AiResultSource | null>(null)
 
   const analyze = async () => {
     if (!imageUrl) {
@@ -31,13 +32,15 @@ const Identify: React.FC = () => {
     setAdded(false)
     setIsLowConfidence(false)
     setShowCandidates(false)
+    setResultSource(null)
     try {
       const response: IdentifyResponse = await identifyPlant(imageUrl)
       setResult(response.result)
       setCandidates(response.candidates || [])
       setIsLowConfidence(response.result.confidence < LOW_CONFIDENCE_THRESHOLD)
       setShowCandidates(response.result.confidence < LOW_CONFIDENCE_THRESHOLD && (response.candidates?.length || 0) > 0)
-      addIdentifyHistory({ id: createId('identify'), imageUrl, result: response.result, createdAt: new Date().toISOString() })
+      setResultSource(response.source)
+      addIdentifyHistory({ id: createId('identify'), imageUrl, result: response.result, source: response.source, createdAt: new Date().toISOString() })
     } catch {
       Taro.showToast({ title: '识别失败，请稍后重试', icon: 'none' })
     } finally {
@@ -82,8 +85,8 @@ const Identify: React.FC = () => {
 
       <ImageUploader
         value={imageUrl}
-        onSelect={(path) => { setImageUrl(path); setResult(null); setCandidates([]); setAdded(false); setIsLowConfidence(false); setShowCandidates(false) }}
-        onRemove={() => { setImageUrl(''); setResult(null); setCandidates([]); setAdded(false); setIsLowConfidence(false); setShowCandidates(false) }}
+        onSelect={(path) => { setImageUrl(path); setResult(null); setCandidates([]); setAdded(false); setIsLowConfidence(false); setShowCandidates(false); setResultSource(null) }}
+        onRemove={() => { setImageUrl(''); setResult(null); setCandidates([]); setAdded(false); setIsLowConfidence(false); setShowCandidates(false); setResultSource(null) }}
       />
       <Button className='primary-button identify-submit' disabled={!imageUrl || loading} loading={loading} onClick={analyze}>
         {loading ? '正在分析图片' : '开始识别'}
@@ -93,6 +96,11 @@ const Identify: React.FC = () => {
 
       {result && (
         <View className='identify-result'>
+          {resultSource && (
+            <View className={`result-source result-source--${resultSource}`}>
+              <Text>{resultSource === 'ai' ? '真实 AI 结果' : resultSource === 'mock' ? '本地模拟结果' : 'AI 不可用，当前为模拟结果'}</Text>
+            </View>
+          )}
           <View className='result-heading'>
             <View><Text className='result-kicker'>最可能的结果</Text><Text className='result-name'>{result.name}</Text><Text className='result-latin'>{result.latinName}</Text></View>
             <View className={`confidence-box ${isLowConfidence ? 'confidence-box--low' : ''}`}><Text>{Math.round(result.confidence * 100)}%</Text><Text>可信度</Text></View>
@@ -156,7 +164,7 @@ const Identify: React.FC = () => {
         </View>
       )}
 
-      <Text className='privacy-note'>图片仅用于植物识别，不会保存或用于其他用途。</Text>
+      <Text className='privacy-note'>模拟模式不会上传图片；真实 AI 模式会将图片发送至项目后端和已配置的第三方 AI 服务处理，请勿上传含个人敏感信息的图片。</Text>
     </View>
   )
 }

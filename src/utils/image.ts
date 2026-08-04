@@ -21,7 +21,7 @@ export async function compressImage(
 }
 
 async function compressImageH5(filePath: string, maxWidth: number, quality: number): Promise<string> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const img = new Image()
     img.crossOrigin = 'anonymous'
 
@@ -103,9 +103,23 @@ export async function fileToBase64(filePath: string): Promise<string> {
       Taro.getFileSystemManager().readFile({
         filePath,
         encoding: 'base64',
-        success: (res) => resolve(`data:image/jpeg;base64,${res.data}`),
+        success: (res) => {
+          const base64 = String(res.data)
+          resolve(`data:${detectImageMimeType(filePath, base64)};base64,${base64}`)
+        },
         fail: reject
       })
     }
   })
+}
+
+function detectImageMimeType(filePath: string, base64: string): string {
+  if (base64.startsWith('/9j/')) return 'image/jpeg'
+  if (base64.startsWith('iVBOR')) return 'image/png'
+  if (base64.startsWith('UklGR')) return 'image/webp'
+
+  const cleanPath = filePath.split(/[?#]/)[0].toLowerCase()
+  if (cleanPath.endsWith('.png')) return 'image/png'
+  if (cleanPath.endsWith('.webp')) return 'image/webp'
+  return 'image/jpeg'
 }

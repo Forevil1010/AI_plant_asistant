@@ -5,51 +5,58 @@ const cors = require('cors')
 
 const plantRoutes = require('./routes/plant')
 const diagnoseRoutes = require('./routes/diagnose')
+const { createCorsOptions, createRateLimiter, getRateLimitOptions } = require('./middleware/security')
 
-const app = express()
-const PORT = process.env.PORT || 3000
+function createApp() {
+  const app = express()
+  if (process.env.TRUST_PROXY === 'true') app.set('trust proxy', 1)
+  app.disable('x-powered-by')
 
-app.use(cors())
-app.use(express.json({ limit: '10mb' }))
-app.use(express.urlencoded({ extended: true, limit: '10mb' }))
+  app.use(cors(createCorsOptions()))
+  app.use(express.json({ limit: process.env.REQUEST_BODY_LIMIT || '6mb', strict: true }))
 
-app.get('/api/health', (req, res) => {
-  res.json({
-    code: 0,
-    message: 'ok',
-    data: {
-      status: 'running',
-      hasQianfanKey: Boolean(process.env.QIANFAN_API_KEY && process.env.QIANFAN_API_KEY.startsWith('bce-v3'))
-    }
+  app.get('/api/health', (_req, res) => {
+    res.json({
+      code: 0,
+      message: 'ok',
+      data: {
+        status: 'running',
+        aiMode: 'mock',
+        hasAiProvider: false
+      }
+    })
   })
-})
 
-app.use('/api/plant', plantRoutes)
-app.use('/api/diagnose', diagnoseRoutes)
+  const aiRateLimiter = createRateLimiter(getRateLimitOptions())
+  app.use('/api/plant', aiRateLimiter, plantRoutes)
+  app.use('/api/diagnose', aiRateLimiter, diagnoseRoutes)
 
-app.use((err, req, res, next) => {
-  console.error('Server error:', err)
-  res.status(500).json({
-    code: 500,
-    message: err.message || '服务器内部错误',
-    data: null
+  app.use((_req, res) => {
+    res.status(404).json({ code: 404, message: '接口不存在', data: null })
   })
-})
 
-app.listen(PORT, () => {
-  console.log(`
-╔══════════════════════════════════════════╗
-║  AI园林助手后端服务启动成功               ║
-║  端口: ${PORT}                              ║
-║  健康检查: http://localhost:${PORT}/api/health ║
-╚══════════════════════════════════════════╝
-  `)
+  app.use((err, _req, res, _next) => {
+    const status = err.status || (err.type === 'entity.too.large' ? 413 : 500)
+    if (status >= 500) console.error('Server error:', err)
+    res.status(status).json({
+      code: status,
+      message: status >= 500 ? '服务器内部错误' : err.message,
+      data: null
+    })
+  })
 
-  if (!process.env.QIANFAN_API_KEY || !process.env.QIANFAN_API_KEY.startsWith('bce-v3')) {
-    console.log('⚠️  未配置千帆 API Key，当前使用模拟数据')
-    console.log('   配置方法：复制 .env.example 为 .env，填入 QIANFAN_API_KEY\n')
-  } else {
-    console.log('✅ 千帆 API Key 已配置，将使用真实 AI 服务')
-    console.log(`   模型: ${process.env.QIANFAN_MODEL || 'ernie-4.5-turbo-vl'}\n`)
-  }
-})
+  return app
+}
+
+function startServer(port = Number(process.env.PORT) || 3000) {
+  const server = createApp().listen(port, () => {
+    console.log(`AI 园林助手后端已启动: http://localhost:${port}/api/health`)
+
+    console.log('当前未配置真实 AI 服务，识别与诊断接口使用模拟数据')
+  })
+  return server
+}
+
+if (require.main === module) startServer()
+
+module.exports = { createApp, startServer }

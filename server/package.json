@@ -1,16 +1,16 @@
 {
   "name": "ai-plant-assistant-server",
   "version": "0.1.0",
-  "description": "AI园林助手后端服务 - 代理AI请求",
+  "description": "AI园林助手后端服务 - 可替换的识别与诊断接口",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
-    "dev": "node --watch src/app.js"
+    "dev": "node --watch src/app.js",
+    "test": "node --test"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "multer": "^1.4.5-lts.1"
+    "express": "^4.19.2"
   }
 }
