@@ -3,6 +3,8 @@
 .identify-heading .section-link { flex: 0 0 auto; padding-top: 8px; }
 .identify-submit { margin-top: 22px; }
 .identify-result { margin-top: 40px; padding-top: 32px; border-top: 1px solid #dfe5df; }
+.result-source { margin-bottom: 22px; padding: 16px 20px; border-left: 6px solid #176b45; background: #eef6f1; color: #285c42; font-size: 22px; line-height: 1.5; }
+.result-source--mock, .result-source--fallback { border-left-color: #d28a32; background: #fff6e8; color: #76501e; }
 .result-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 22px; }
 .result-kicker, .result-name, .result-latin { display: block; }
 .result-kicker { color: #176b45; font-size: 22px; font-weight: 600; }
@@ -12,6 +14,21 @@
 .confidence-box text { display: block; }
 .confidence-box text:first-child { color: #176b45; font-size: 30px; font-weight: 700; }
 .confidence-box text:last-child { margin-top: 3px; color: #607a6b; font-size: 19px; }
+.confidence-box--low { border-color: #e8d0b8; background: #fff6ed; }
+.confidence-box--low text:first-child { color: #b46a2a; }
+.low-confidence-tip { margin-top: 20px; padding: 18px 20px; background: #fff6ed; border-radius: 8px; border-left: 6px solid #e8a755; }
+.low-confidence-tip text { color: #8a5a1e; font-size: 23px; line-height: 1.5; }
+.candidates-section { margin-top: 24px; }
+.candidates-section .section-title { color: #176b45; font-size: 26px; font-weight: 650; }
+.candidates-list { margin-top: 14px; display: flex; flex-direction: column; gap: 12px; }
+.candidate-item { display: flex; align-items: center; gap: 16px; padding: 18px; background: #f7faf7; border-radius: 10px; border: 1px solid #e0e8e0; }
+.candidate-image { flex: 0 0 auto; width: 100px; height: 100px; border-radius: 8px; background: #e8eee8; }
+.candidate-info { flex: 1; min-width: 0; }
+.candidate-name { display: block; color: #17251d; font-size: 26px; font-weight: 600; }
+.candidate-confidence { display: block; margin-top: 4px; color: #607a6b; font-size: 21px; }
+.candidate-summary { display: block; margin-top: 6px; color: #777f79; font-size: 21px; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.candidate-arrow { flex: 0 0 auto; color: #9aa59f; font-size: 40px; font-weight: 300; }
+.show-candidates-btn { display: block; margin-top: 16px; color: #176b45; font-size: 24px; font-weight: 600; text-align: center; }
 .tag-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
 .result-summary { display: block; margin-top: 21px; color: #4e5b53; font-size: 25px; line-height: 1.72; }
 .care-list { margin-top: 15px; padding: 0 23px; }

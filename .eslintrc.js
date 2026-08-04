@@ -30,6 +30,15 @@ module.exports = {
       parserOptions: {
         project: null
       }
+    },
+    {
+      files: ['server/**/*.js'],
+      rules: {
+        'import/no-commonjs': 'off',
+        '@typescript-eslint/no-unused-vars': 'off',
+        'no-console': 'off',
+        'no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
+      }
     }
   ]
 }

@@ -1,4 +1,11 @@
 import { defineConfig } from '@tarojs/cli'
+import { existsSync } from 'node:fs'
+import { loadEnvFile } from 'node:process'
+
+if (existsSync('.env')) loadEnvFile('.env')
+
+const apiBaseUrl = process.env.TARO_APP_API_BASE_URL || ''
+const useMock = process.env.TARO_APP_USE_MOCK === 'true' || !apiBaseUrl
 
 export default defineConfig({
   projectName: 'AI-plant-asist',
@@ -11,6 +18,10 @@ export default defineConfig({
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
+  defineConstants: {
+    __API_BASE_URL__: JSON.stringify(apiBaseUrl),
+    __USE_MOCK__: JSON.stringify(useMock)
+  },
   plugins: [
     '@tarojs/plugin-html'
   ],

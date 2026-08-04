@@ -2,8 +2,15 @@ import React, { useState } from 'react'
 import Taro, { useLoad } from '@tarojs/taro'
 import { Image, Text, View } from '@tarojs/components'
 import { useApp } from '../../store'
+import { AiResultSource } from '../../types'
 import { formatDateTime } from '../../utils/date'
 import './index.scss'
+
+const sourceLabels: Record<AiResultSource, string> = {
+  ai: '真实 AI',
+  mock: '本地模拟',
+  fallback: '异常降级'
+}
 
 const History: React.FC = () => {
   const { state, removeIdentifyHistory, removeDiagnosisHistory } = useApp()
@@ -31,6 +38,7 @@ const History: React.FC = () => {
             <Image src={item.imageUrl || item.result.imageUrl} mode='aspectFill' />
             <View className='history-body'>
               <View className='history-head'><View><Text className='history-title'>{item.result.name}</Text><Text className='history-meta'>可信度 {Math.round(item.result.confidence * 100)}%</Text></View><Text className='history-delete' onClick={() => remove(item.id)}>删除</Text></View>
+              {item.source && <Text className={`history-source history-source--${item.source}`}>{sourceLabels[item.source]}</Text>}
               <Text className='history-summary'>{item.result.summary}</Text><Text className='history-time'>{formatDateTime(item.createdAt)}</Text>
             </View>
           </View>
@@ -39,6 +47,7 @@ const History: React.FC = () => {
         state.diagnosisHistory.length ? <View>{state.diagnosisHistory.map((item) => (
           <View key={item.id} className='diagnosis-history card'>
             <View className='history-head'><View><Text className='history-title'>{item.result.title}</Text><Text className='history-meta'>{item.result.confidenceLabel} · {item.result.severity}</Text></View><Text className='history-delete' onClick={() => remove(item.id)}>删除</Text></View>
+            {item.source && <Text className={`history-source history-source--${item.source}`}>{sourceLabels[item.source]}</Text>}
             {item.imageUrl && <Image className='diagnosis-history__image' src={item.imageUrl} mode='aspectFill' />}
             <Text className='diagnosis-history__input'>{item.description || (item.imageUrl ? '仅提交了植物图片' : '未记录输入内容')}</Text>
             <View className='diagnosis-history__advice'><Text>首要建议</Text><Text>{item.result.actions[0]}</Text></View>

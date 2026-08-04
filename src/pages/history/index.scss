@@ -6,6 +6,8 @@
 .history-title, .history-meta, .history-summary, .history-time, .diagnosis-history__input { display: block; }
 .history-title { color: #28372e; font-size: 27px; line-height: 1.4; font-weight: 650; }
 .history-meta { margin-top: 4px; color: #176b45; font-size: 20px; }
+.history-source { display: inline-block; margin-top: 10px; padding: 5px 10px; border: 1px solid #b8d2c2; border-radius: 6px; color: #285c42; font-size: 18px; }
+.history-source--mock, .history-source--fallback { border-color: #e2c492; color: #76501e; }
 .history-delete { flex: 0 0 auto; color: #9a5b51; font-size: 20px; }
 .history-summary { display: -webkit-box; margin-top: 11px; overflow: hidden; color: #566159; font-size: 21px; line-height: 1.5; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .history-time { margin-top: 11px; color: #858c86; font-size: 19px; }

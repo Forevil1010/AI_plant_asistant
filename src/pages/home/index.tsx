@@ -16,7 +16,7 @@ const dailyTips = [
 ]
 
 const Home: React.FC = () => {
-  const { state, finishCareTask } = useApp()
+  const { state, finishCareTask, snoozeCareTask } = useApp()
   const [query, setQuery] = useState('')
   const [searched, setSearched] = useState(false)
   const [results, setResults] = useState<typeof plantKnowledge>([])
@@ -39,6 +39,20 @@ const Home: React.FC = () => {
   const completeTask = (id: string) => {
     finishCareTask(id, 'done')
     Taro.showToast({ title: '任务已完成', icon: 'success' })
+  }
+
+  const snoozeTask = (id: string) => {
+    Taro.showActionSheet({
+      itemList: ['延后 1 天', '延后 3 天', '延后 7 天'],
+      success: (res) => {
+        if (res.tapIndex === undefined || res.tapIndex < 0) return
+        const days = [1, 3, 7][res.tapIndex]
+        if (!days) return
+        snoozeCareTask(id, days)
+        Taro.showToast({ title: `已延后 ${days} 天`, icon: 'success' })
+      },
+      fail: () => {}
+    })
   }
 
   return (
@@ -105,7 +119,10 @@ const Home: React.FC = () => {
                     <Text className='task-row__title'>{careTypeLabels[task.type]} · {plantMap.get(task.plantId) || '已删除植物'}</Text>
                     <Text className='task-row__time'>{formatDateTime(task.dueAt)}</Text>
                   </View>
-                  <Button className='task-row__button' onClick={() => completeTask(task.id)}>完成</Button>
+                  <View className='task-row__actions'>
+                    <Text className='task-row__snooze' onClick={() => snoozeTask(task.id)}>延后</Text>
+                    <Button className='task-row__button' onClick={() => completeTask(task.id)}>完成</Button>
+                  </View>
                 </View>
               ))}
             </View>
