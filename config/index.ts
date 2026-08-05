@@ -29,7 +29,7 @@ export default defineConfig({
   compiler: {
     type: 'webpack5',
     prebundle: {
-      enable: true
+      enable: false
     }
   },
   cache: {
@@ -37,6 +37,9 @@ export default defineConfig({
   },
   sass: {},
   mini: {
+    webpackChain(chain) {
+      chain.output.set('chunkLoadingGlobal', 'aiPlantAssistantChunks')
+    },
     postcss: {
       autoprefixer: {
         enable: true,
