@@ -199,3 +199,29 @@ button::after {
   color: $muted;
   font-size: 23px;
 }
+
+.retry-panel {
+  margin-top: 28px;
+  padding: 36px 30px;
+  text-align: center;
+}
+
+.retry-title {
+  display: block;
+  color: #35423a;
+  font-size: 30px;
+  font-weight: 650;
+}
+
+.retry-copy {
+  display: block;
+  margin: 12px auto 24px;
+  max-width: 520px;
+  color: $muted;
+  font-size: 24px;
+  line-height: 1.6;
+}
+
+.retry-button {
+  width: 100%;
+}

@@ -8,6 +8,7 @@ export default defineAppConfig({
     'pages/profile/index',
     'pages/plant-form/index',
     'pages/plant-detail/index',
+    'pages/plant-knowledge/index',
     'pages/task-form/index',
     'pages/history/index'
   ],

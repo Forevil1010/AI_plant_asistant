@@ -9,6 +9,7 @@ export interface PlantCareGuide {
   temperature: string
   soil: string
   fertilizer: string
+  humidity: string
 }
 
 export interface PlantKnowledge {

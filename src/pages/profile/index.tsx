@@ -9,7 +9,12 @@ const Profile: React.FC = () => {
   const pendingTasks = state.careTasks.filter((task) => task.status === 'pending').length
 
   const showCloudStatus = () => Taro.showModal({ title: '当前为本地模式', content: '数据只保存在这台设备中。注册小程序并开通 CloudBase 后，才能启用云同步和微信订阅消息。', showCancel: false, confirmText: '知道了' })
-  const showPrivacy = () => Taro.showModal({ title: '隐私说明', content: '当前版本不会把图片或养护数据上传到网络。接入第三方 AI 前会另行说明图片用途和保存规则。', showCancel: false, confirmText: '知道了' })
+  const showPrivacy = () => Taro.showModal({
+    title: '隐私保护指引',
+    content: '【数据存储】植物档案、养护记录、任务与历史仅保存在当前设备本地，不会自动上传到服务器，卸载或清除小程序后将无法恢复。\n【图片处理】模拟模式下图片不会上传网络；真实 AI 模式下，图片会发送至项目后端及已配置的第三方 AI 服务进行识别或诊断，处理完成后不在服务器长期留存。\n【第三方服务】接入的第三方 AI 服务可能位于境外，请勿上传含人物面孔、住址、证件等个人敏感信息的图片。\n【诊断边界】诊断结果仅为养护参考，不能替代专业植物病理检测。\n【用户权利】你可以随时在"清除所有本地数据"中删除全部本地记录；卸载小程序即可清除所有本地数据。',
+    showCancel: false,
+    confirmText: '我知道了'
+  })
   const clearData = async () => {
     const response = await Taro.showModal({ title: '清除所有本地数据？', content: '花园植物、养护记录、任务和历史都会删除，且无法恢复。', confirmText: '确认清除', confirmColor: '#A33D34' })
     if (response.confirm) {

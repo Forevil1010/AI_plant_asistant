@@ -11,7 +11,7 @@ import './index.scss'
 const LOW_CONFIDENCE_THRESHOLD = 0.7
 
 const Identify: React.FC = () => {
-  const { savePlant, addIdentifyHistory } = useApp()
+  const { savePlant, addIdentifyHistory, updateIdentifyHistory } = useApp()
   const [imageUrl, setImageUrl] = useState('')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<PlantKnowledge | null>(null)
@@ -20,12 +20,15 @@ const Identify: React.FC = () => {
   const [added, setAdded] = useState(false)
   const [showCandidates, setShowCandidates] = useState(false)
   const [resultSource, setResultSource] = useState<AiResultSource | null>(null)
+  const [historyId, setHistoryId] = useState('')
+  const [failed, setFailed] = useState(false)
 
   const analyze = async () => {
     if (!imageUrl) {
       Taro.showToast({ title: '请先选择植物图片', icon: 'none' })
       return
     }
+    if (loading) return
     setLoading(true)
     setResult(null)
     setCandidates([])
@@ -33,6 +36,8 @@ const Identify: React.FC = () => {
     setIsLowConfidence(false)
     setShowCandidates(false)
     setResultSource(null)
+    setHistoryId('')
+    setFailed(false)
     try {
       const response: IdentifyResponse = await identifyPlant(imageUrl)
       setResult(response.result)
@@ -40,9 +45,11 @@ const Identify: React.FC = () => {
       setIsLowConfidence(response.result.confidence < LOW_CONFIDENCE_THRESHOLD)
       setShowCandidates(response.result.confidence < LOW_CONFIDENCE_THRESHOLD && (response.candidates?.length || 0) > 0)
       setResultSource(response.source)
-      addIdentifyHistory({ id: createId('identify'), imageUrl, result: response.result, source: response.source, createdAt: new Date().toISOString() })
+      const id = createId('identify')
+      setHistoryId(id)
+      addIdentifyHistory({ id, imageUrl, result: response.result, source: response.source, createdAt: new Date().toISOString() })
     } catch {
-      Taro.showToast({ title: '识别失败，请稍后重试', icon: 'none' })
+      setFailed(true)
     } finally {
       setLoading(false)
     }
@@ -53,6 +60,9 @@ const Identify: React.FC = () => {
     setIsLowConfidence(false)
     setShowCandidates(false)
     setAdded(false)
+    if (historyId) {
+      updateIdentifyHistory(historyId, candidate)
+    }
   }
 
   const addToGarden = () => {
@@ -93,6 +103,14 @@ const Identify: React.FC = () => {
       </Button>
 
       {loading && <Loading text='正在比对植物特征' />}
+
+      {failed && !loading && (
+        <View className='retry-panel card'>
+          <Text className='retry-title'>识别失败</Text>
+          <Text className='retry-copy'>可能是网络问题或服务暂时不可用，可以稍后再试一次。</Text>
+          <Button className='primary-button retry-button' onClick={analyze}>重新识别</Button>
+        </View>
+      )}
 
       {result && (
         <View className='identify-result'>
@@ -146,7 +164,7 @@ const Identify: React.FC = () => {
               <View className='care-list card'>
                 {[
                   ['光照', result.care.light], ['浇水', result.care.water], ['温度', result.care.temperature],
-                  ['土壤', result.care.soil], ['施肥', result.care.fertilizer]
+                  ['土壤', result.care.soil], ['施肥', result.care.fertilizer], ['湿度', result.care.humidity]
                 ].map(([label, value]) => <View key={label} className='care-row'><Text>{label}</Text><Text>{value}</Text></View>)}
               </View>
             </View>

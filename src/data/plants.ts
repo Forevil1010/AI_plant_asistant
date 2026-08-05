@@ -19,7 +19,8 @@ export const plantKnowledge: PlantKnowledge[] = [
       water: '表层土壤干燥约 2 至 3 厘米后浇透，避免盆底积水。',
       temperature: '适宜温度 18 至 30℃，冬季尽量保持在 10℃以上。',
       soil: '使用疏松、排水良好的基质，可加入树皮或珍珠岩。',
-      fertilizer: '生长期每 3 至 4 周使用一次稀释的通用肥。'
+      fertilizer: '生长期每 3 至 4 周使用一次稀释的通用肥。',
+      humidity: '喜欢较高空气湿度，适宜湿度 60% 至 80%，干燥季节可向叶面喷水或使用加湿器。'
     },
     safety: '汁液含草酸钙，对猫狗及儿童有刺激性，应避免误食。'
   },
@@ -37,7 +38,8 @@ export const plantKnowledge: PlantKnowledge[] = [
       water: '表层土壤干燥后再浇透，避免盆土长期潮湿。',
       temperature: '适宜温度 18 至 28℃，避免冷风和突然降温。',
       soil: '使用疏松、透气且排水良好的室内植物基质。',
-      fertilizer: '春夏每月使用一次稀释肥料，秋冬减少。'
+      fertilizer: '春夏每月使用一次稀释肥料，秋冬减少。',
+      humidity: '适应中等空气湿度，适宜湿度 40% 至 60%，定期擦拭叶面灰尘即可。'
     },
     safety: '折断后的乳白色汁液可能刺激皮肤，对宠物也有风险，应避免接触和误食。'
   },
@@ -55,7 +57,8 @@ export const plantKnowledge: PlantKnowledge[] = [
       water: '基质大部分干燥后再浇水，避免水留在叶心。',
       temperature: '适宜温度 15 至 28℃，冬季注意防寒。',
       soil: '选择颗粒比例较高、排水快的多肉植物基质。',
-      fertilizer: '春秋生长期少量施用低浓度肥料即可。'
+      fertilizer: '春秋生长期少量施用低浓度肥料即可。',
+      humidity: '喜欢干燥环境，适宜湿度 30% 至 50%，环境过湿易导致腐烂，无需喷水增湿。'
     },
     safety: '通常被认为对猫狗毒性较低，但仍不建议让宠物啃食。'
   },
@@ -73,7 +76,8 @@ export const plantKnowledge: PlantKnowledge[] = [
       water: '保持基质均匀微湿，同时避免盆底长期积水。',
       temperature: '适宜温度 16 至 26℃，远离空调和暖气直吹。',
       soil: '使用富含腐殖质、保水且排水良好的疏松基质。',
-      fertilizer: '生长期每月使用一次低浓度观叶植物肥。'
+      fertilizer: '生长期每月使用一次低浓度观叶植物肥。',
+      humidity: '需要较高空气湿度，适宜湿度 60% 至 80%，干燥环境易导致叶尖枯黄，建议经常喷雾。'
     },
     safety: '通常被认为对猫狗无明显毒性，但大量啃食仍可能造成消化不适。'
   }

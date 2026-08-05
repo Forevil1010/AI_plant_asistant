@@ -51,8 +51,8 @@ function getResultSource(result: { isMock?: boolean; isFallback?: boolean }): Ai
 
 export async function identifyPlant(imagePath: string): Promise<IdentifyResponse> {
   if (USE_MOCK) {
-    const result = await mockIdentify(imagePath)
-    return { result, candidates: [], isMock: true, source: 'mock' }
+    const { result, candidates } = await mockIdentify(imagePath)
+    return { result, candidates, isMock: true, source: 'mock' }
   }
 
   try {
@@ -69,8 +69,8 @@ export async function identifyPlant(imagePath: string): Promise<IdentifyResponse
     return { ...result, source: getResultSource(result) }
   } catch (error) {
     Taro.showToast({ title: '连接失败，展示模拟结果', icon: 'none' })
-    const result = await mockIdentify(imagePath)
-    return { result, candidates: [], isFallback: true, source: 'fallback' }
+    const { result, candidates } = await mockIdentify(imagePath)
+    return { result, candidates, isFallback: true, source: 'fallback' }
   }
 }
 

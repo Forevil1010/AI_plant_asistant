@@ -33,14 +33,37 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       if (result.tempFilePaths[0]) {
         let path = result.tempFilePaths[0]
         if (compress) {
-          path = await compressImage(path, { maxWidth: 1280, quality: 0.8 })
+          try {
+            path = await compressImage(path, { maxWidth: 1280, quality: 0.8 })
+          } catch {
+            // 压缩失败时回退到原图，避免阻断流程
+          }
         }
         onSelect(path)
       }
     } catch (error) {
-      if (!String(error).includes('cancel')) {
-        Taro.showToast({ title: '无法读取图片，请检查权限', icon: 'none' })
+      const message = String(error)
+      if (message.includes('cancel')) {
+        return
       }
+      // 权限拒绝：引导用户去设置开启相机/相册权限
+      if (message.includes('auth') || message.includes('permission') || message.includes('deny')) {
+        const modal = await Taro.showModal({
+          title: '需要相机和相册权限',
+          content: '为了选择或拍摄植物图片，请在设置中开启相机和相册权限。',
+          confirmText: '去设置',
+          cancelText: '取消'
+        })
+        if (modal.confirm) {
+          try {
+            await Taro.openSetting()
+          } catch {
+            Taro.showToast({ title: '打开设置失败', icon: 'none' })
+          }
+        }
+        return
+      }
+      Taro.showToast({ title: '无法读取图片，请稍后重试', icon: 'none' })
     }
   }
 

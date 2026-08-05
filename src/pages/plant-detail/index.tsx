@@ -82,7 +82,19 @@ const PlantDetail: React.FC = () => {
           )) : <View className='empty-panel card'><Text className='empty-title'>还没有养护任务</Text><Text className='empty-copy'>建立一个浇水或观察计划。</Text></View>}
         </View>
 
-        {knowledge && <View className='section care-reference'><Text className='section-title'>品种养护参考</Text><View><Text>光照</Text><Text>{knowledge.care.light}</Text></View><View><Text>浇水</Text><Text>{knowledge.care.water}</Text></View><View><Text>温度</Text><Text>{knowledge.care.temperature}</Text></View></View>}
+        {knowledge && (
+          <View className='section care-reference'>
+            <Text className='section-title'>品种养护参考</Text>
+            {[
+              ['光照', knowledge.care.light],
+              ['浇水', knowledge.care.water],
+              ['温度', knowledge.care.temperature],
+              ['土壤', knowledge.care.soil],
+              ['施肥', knowledge.care.fertilizer],
+              ['湿度', knowledge.care.humidity]
+            ].map(([label, value]) => <View key={label}><Text>{label}</Text><Text>{value}</Text></View>)}
+          </View>
+        )}
         <Button className='danger-button delete-plant' onClick={confirmRemovePlant}>删除这株植物</Button>
       </View>
     </View>
