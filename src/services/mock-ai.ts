@@ -5,10 +5,30 @@ function delay<T>(value: T, milliseconds = 800): Promise<T> {
   return new Promise((resolve) => setTimeout(() => resolve(value), milliseconds))
 }
 
-export async function identifyPlant(imagePath: string): Promise<PlantKnowledge> {
+export async function identifyPlant(imagePath: string): Promise<{ result: PlantKnowledge; candidates: PlantKnowledge[] }> {
   const score = [...imagePath].reduce((total, character) => total + character.charCodeAt(0), 0)
-  const selected = plantKnowledge[score % plantKnowledge.length]
-  return delay({ ...selected, confidence: Math.max(selected.confidence - (score % 5) * 0.01, 0.82) })
+  const selectedIndex = score % plantKnowledge.length
+  const selected = plantKnowledge[selectedIndex]
+  const mainResult: PlantKnowledge = {
+    ...selected,
+    confidence: Math.max(selected.confidence - (score % 5) * 0.01, 0.82)
+  }
+
+  // 主结果可信度低于阈值时，返回其他植物作为候选（按可信度降序，最多 3 个）
+  const isLowConfidence = mainResult.confidence < 0.9
+  const candidates: PlantKnowledge[] = isLowConfidence
+    ? plantKnowledge
+        .filter((_, index) => index !== selectedIndex)
+        .map((plant) => ({
+          ...plant,
+          confidence: 0.3 + (plant.confidence - 0.82) * 0.5
+        }))
+        .sort((a, b) => b.confidence - a.confidence)
+        .slice(0, 3)
+        .map(({ summary, ...rest }) => ({ ...rest, summary: summary.slice(0, 50) + '...' }))
+    : []
+
+  return delay({ result: mainResult, candidates })
 }
 
 export async function diagnosePlant(description: string, hasImage: boolean): Promise<DiagnosisResult> {
