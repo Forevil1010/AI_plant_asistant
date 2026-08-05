@@ -146,7 +146,7 @@ const Identify: React.FC = () => {
               <View className='care-list card'>
                 {[
                   ['光照', result.care.light], ['浇水', result.care.water], ['温度', result.care.temperature],
-                  ['土壤', result.care.soil], ['施肥', result.care.fertilizer]
+                  ['土壤', result.care.soil], ['施肥', result.care.fertilizer], ['湿度', result.care.humidity]
                 ].map(([label, value]) => <View key={label} className='care-row'><Text>{label}</Text><Text>{value}</Text></View>)}
               </View>
             </View>
