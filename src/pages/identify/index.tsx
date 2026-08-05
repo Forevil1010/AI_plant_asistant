@@ -21,12 +21,14 @@ const Identify: React.FC = () => {
   const [showCandidates, setShowCandidates] = useState(false)
   const [resultSource, setResultSource] = useState<AiResultSource | null>(null)
   const [historyId, setHistoryId] = useState('')
+  const [failed, setFailed] = useState(false)
 
   const analyze = async () => {
     if (!imageUrl) {
       Taro.showToast({ title: '请先选择植物图片', icon: 'none' })
       return
     }
+    if (loading) return
     setLoading(true)
     setResult(null)
     setCandidates([])
@@ -35,6 +37,7 @@ const Identify: React.FC = () => {
     setShowCandidates(false)
     setResultSource(null)
     setHistoryId('')
+    setFailed(false)
     try {
       const response: IdentifyResponse = await identifyPlant(imageUrl)
       setResult(response.result)
@@ -46,7 +49,7 @@ const Identify: React.FC = () => {
       setHistoryId(id)
       addIdentifyHistory({ id, imageUrl, result: response.result, source: response.source, createdAt: new Date().toISOString() })
     } catch {
-      Taro.showToast({ title: '识别失败，请稍后重试', icon: 'none' })
+      setFailed(true)
     } finally {
       setLoading(false)
     }
@@ -100,6 +103,14 @@ const Identify: React.FC = () => {
       </Button>
 
       {loading && <Loading text='正在比对植物特征' />}
+
+      {failed && !loading && (
+        <View className='retry-panel card'>
+          <Text className='retry-title'>识别失败</Text>
+          <Text className='retry-copy'>可能是网络问题或服务暂时不可用，可以稍后再试一次。</Text>
+          <Button className='primary-button retry-button' onClick={analyze}>重新识别</Button>
+        </View>
+      )}
 
       {result && (
         <View className='identify-result'>

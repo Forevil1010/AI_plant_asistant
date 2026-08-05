@@ -22,6 +22,7 @@ const Diagnose: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<DiagnosisResult | null>(null)
   const [resultSource, setResultSource] = useState<AiResultSource | null>(null)
+  const [failed, setFailed] = useState(false)
   const plantOptions = useMemo(() => ['不关联花园植物', ...state.gardenPlants.map((plant) => plant.nickname || plant.name)], [state.gardenPlants])
 
   const diagnose = async () => {
@@ -29,9 +30,11 @@ const Diagnose: React.FC = () => {
       Taro.showToast({ title: '请添加图片或描述症状', icon: 'none' })
       return
     }
+    if (loading) return
     setLoading(true)
     setResult(null)
     setResultSource(null)
+    setFailed(false)
     try {
       const response = await diagnosePlant(description, Boolean(imageUrl), imageUrl || undefined)
       setResult(response.result)
@@ -46,7 +49,7 @@ const Diagnose: React.FC = () => {
         createdAt: new Date().toISOString()
       })
     } catch {
-      Taro.showToast({ title: '诊断失败，请稍后重试', icon: 'none' })
+      setFailed(true)
     } finally {
       setLoading(false)
     }
@@ -75,6 +78,14 @@ const Diagnose: React.FC = () => {
         {loading ? '正在分析症状' : '开始诊断'}
       </Button>
       {loading && <Loading text='正在整理可能原因和处理步骤' />}
+
+      {failed && !loading && (
+        <View className='retry-panel card'>
+          <Text className='retry-title'>诊断失败</Text>
+          <Text className='retry-copy'>可能是网络问题或服务暂时不可用，可以稍后再试一次。</Text>
+          <Button className='primary-button retry-button' onClick={diagnose}>重新诊断</Button>
+        </View>
+      )}
 
       {result && (
         <View className='diagnosis-result'>
