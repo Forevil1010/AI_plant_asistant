@@ -139,7 +139,7 @@ const Home: React.FC = () => {
           <ScrollView className='featured-scroll' scrollX enhanced showScrollbar={false}>
             <View className='featured-row'>
               {plantKnowledge.map((plant) => (
-                <View key={plant.id} className='featured-card card'>
+                <View key={plant.id} className='featured-card card' onClick={() => Taro.navigateTo({ url: `/pages/plant-knowledge/index?id=${plant.id}` })}>
                   <Image src={plant.imageUrl} mode='aspectFill' lazyLoad />
                   <View className='featured-card__body'><Text>{plant.name}</Text><Text>{plant.tags.join(' · ')}</Text></View>
                 </View>
