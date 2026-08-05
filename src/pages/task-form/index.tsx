@@ -25,6 +25,11 @@ const TaskForm: React.FC = () => {
   useLoad((options) => {
     const index = state.gardenPlants.findIndex((plant) => plant.id === options.plantId)
     if (index >= 0) setPlantIndex(index)
+    if (options.type) {
+      const idx = careTypes.indexOf(options.type as CareType)
+      if (idx >= 0) setTypeIndex(idx)
+    }
+    if (options.note) setNote(decodeURIComponent(options.note))
   })
 
   const save = () => {

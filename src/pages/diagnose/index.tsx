@@ -103,6 +103,17 @@ const Diagnose: React.FC = () => {
           <View className='action-plan'><Text className='diagnosis-block__title'>现在可以这样处理</Text>{result.actions.map((item, index) => <View key={item} className='action-step'><Text>{index + 1}</Text><Text>{item}</Text></View>)}</View>
           <View className='follow-up'><Text>后续观察</Text><Text>{result.followUp}</Text></View>
           <View className='safety-note'><Text>安全提醒</Text><Text>{result.safety}</Text></View>
+
+          <Button
+            className='secondary-button diagnosis-action-button'
+            onClick={() => {
+              const plantId = plantIndex > 0 ? state.gardenPlants[plantIndex - 1]?.id : ''
+              const note = encodeURIComponent(`来自诊断：${result.title}`)
+              Taro.navigateTo({ url: `/pages/task-form/index?plantId=${plantId}&type=observe&note=${note}` })
+            }}
+          >
+            根据诊断创建养护任务
+          </Button>
         </View>
       )}
 
