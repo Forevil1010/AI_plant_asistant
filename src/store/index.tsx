@@ -63,6 +63,7 @@ export type Action =
   | { type: 'FINISH_TASK'; id: string; status: Extract<TaskStatus, 'done' | 'skipped'> }
   | { type: 'SNOOZE_TASK'; id: string; days?: number }
   | { type: 'ADD_IDENTIFY_HISTORY'; item: IdentifyHistory }
+  | { type: 'UPDATE_IDENTIFY_HISTORY'; id: string; result: IdentifyHistory['result'] }
   | { type: 'REMOVE_IDENTIFY_HISTORY'; id: string }
   | { type: 'ADD_DIAGNOSIS_HISTORY'; item: DiagnosisHistory }
   | { type: 'REMOVE_DIAGNOSIS_HISTORY'; id: string }
@@ -174,6 +175,13 @@ export function reducer(state: AppState, action: Action): AppState {
       persist('identifyHistory', identifyHistory)
       return { ...state, identifyHistory }
     }
+    case 'UPDATE_IDENTIFY_HISTORY': {
+      const identifyHistory = state.identifyHistory.map((item) =>
+        item.id === action.id ? { ...item, result: action.result } : item
+      )
+      persist('identifyHistory', identifyHistory)
+      return { ...state, identifyHistory }
+    }
     case 'REMOVE_IDENTIFY_HISTORY': {
       const identifyHistory = state.identifyHistory.filter((item) => item.id !== action.id)
       persist('identifyHistory', identifyHistory)
@@ -209,6 +217,7 @@ interface AppContextValue {
   finishCareTask: (id: string, status: Extract<TaskStatus, 'done' | 'skipped'>) => void
   snoozeCareTask: (id: string, days?: number) => void
   addIdentifyHistory: (item: IdentifyHistory) => void
+  updateIdentifyHistory: (id: string, result: IdentifyHistory['result']) => void
   removeIdentifyHistory: (id: string) => void
   addDiagnosisHistory: (item: DiagnosisHistory) => void
   removeDiagnosisHistory: (id: string) => void
@@ -228,6 +237,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const finishCareTask = useCallback((id: string, status: Extract<TaskStatus, 'done' | 'skipped'>) => dispatch({ type: 'FINISH_TASK', id, status }), [])
   const snoozeCareTask = useCallback((id: string, days?: number) => dispatch({ type: 'SNOOZE_TASK', id, days }), [])
   const addIdentifyHistory = useCallback((item: IdentifyHistory) => dispatch({ type: 'ADD_IDENTIFY_HISTORY', item }), [])
+  const updateIdentifyHistory = useCallback((id: string, result: IdentifyHistory['result']) => dispatch({ type: 'UPDATE_IDENTIFY_HISTORY', id, result }), [])
   const removeIdentifyHistory = useCallback((id: string) => dispatch({ type: 'REMOVE_IDENTIFY_HISTORY', id }), [])
   const addDiagnosisHistory = useCallback((item: DiagnosisHistory) => dispatch({ type: 'ADD_DIAGNOSIS_HISTORY', item }), [])
   const removeDiagnosisHistory = useCallback((id: string) => dispatch({ type: 'REMOVE_DIAGNOSIS_HISTORY', id }), [])
@@ -244,6 +254,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     finishCareTask,
     snoozeCareTask,
     addIdentifyHistory,
+    updateIdentifyHistory,
     removeIdentifyHistory,
     addDiagnosisHistory,
     removeDiagnosisHistory,
@@ -259,6 +270,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     finishCareTask,
     snoozeCareTask,
     addIdentifyHistory,
+    updateIdentifyHistory,
     removeIdentifyHistory,
     addDiagnosisHistory,
     removeDiagnosisHistory,

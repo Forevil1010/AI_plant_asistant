@@ -11,7 +11,7 @@ import './index.scss'
 const LOW_CONFIDENCE_THRESHOLD = 0.7
 
 const Identify: React.FC = () => {
-  const { savePlant, addIdentifyHistory } = useApp()
+  const { savePlant, addIdentifyHistory, updateIdentifyHistory } = useApp()
   const [imageUrl, setImageUrl] = useState('')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<PlantKnowledge | null>(null)
@@ -20,6 +20,7 @@ const Identify: React.FC = () => {
   const [added, setAdded] = useState(false)
   const [showCandidates, setShowCandidates] = useState(false)
   const [resultSource, setResultSource] = useState<AiResultSource | null>(null)
+  const [historyId, setHistoryId] = useState('')
 
   const analyze = async () => {
     if (!imageUrl) {
@@ -33,6 +34,7 @@ const Identify: React.FC = () => {
     setIsLowConfidence(false)
     setShowCandidates(false)
     setResultSource(null)
+    setHistoryId('')
     try {
       const response: IdentifyResponse = await identifyPlant(imageUrl)
       setResult(response.result)
@@ -40,7 +42,9 @@ const Identify: React.FC = () => {
       setIsLowConfidence(response.result.confidence < LOW_CONFIDENCE_THRESHOLD)
       setShowCandidates(response.result.confidence < LOW_CONFIDENCE_THRESHOLD && (response.candidates?.length || 0) > 0)
       setResultSource(response.source)
-      addIdentifyHistory({ id: createId('identify'), imageUrl, result: response.result, source: response.source, createdAt: new Date().toISOString() })
+      const id = createId('identify')
+      setHistoryId(id)
+      addIdentifyHistory({ id, imageUrl, result: response.result, source: response.source, createdAt: new Date().toISOString() })
     } catch {
       Taro.showToast({ title: '识别失败，请稍后重试', icon: 'none' })
     } finally {
@@ -53,6 +57,9 @@ const Identify: React.FC = () => {
     setIsLowConfidence(false)
     setShowCandidates(false)
     setAdded(false)
+    if (historyId) {
+      updateIdentifyHistory(historyId, candidate)
+    }
   }
 
   const addToGarden = () => {
