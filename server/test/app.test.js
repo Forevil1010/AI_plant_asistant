@@ -48,7 +48,21 @@ test('rejects invalid image payloads before returning mock data', async () => {
   const response = await fetch(`${baseUrl}/api/plant/identify`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ image: 'not-an-image' })
+    body: JSON.stringify({ image: 'not-an-image' }),
+    signal: AbortSignal.timeout(2000)
+  })
+  const body = await response.json()
+
+  assert.equal(response.status, 400)
+  assert.equal(body.code, 400)
+})
+
+test('rejects invalid diagnosis payloads', async () => {
+  const response = await fetch(`${baseUrl}/api/diagnose/detect`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ description: {} }),
+    signal: AbortSignal.timeout(2000)
   })
   const body = await response.json()
 

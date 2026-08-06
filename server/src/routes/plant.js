@@ -2,6 +2,7 @@ const express = require('express')
 const { plantKnowledge } = require('../data/plants')
 const { parseImageDataUrl } = require('../utils/image')
 const { isConfigured, chat } = require('../utils/ark')
+const { asyncHandler } = require('../utils/asyncHandler')
 
 const router = express.Router()
 
@@ -94,7 +95,7 @@ async function identifyWithAI(imageBase64, mimeType) {
   return { result, candidates: [] }
 }
 
-router.post('/identify', async (req, res) => {
+router.post('/identify', asyncHandler(async (req, res) => {
   const { image } = req.body
 
   if (!image) {
@@ -145,6 +146,6 @@ router.post('/identify', async (req, res) => {
       }
     })
   }
-})
+}))
 
 module.exports = router

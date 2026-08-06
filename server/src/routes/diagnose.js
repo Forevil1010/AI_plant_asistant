@@ -1,6 +1,7 @@
 const express = require('express')
 const { parseImageDataUrl, RequestValidationError } = require('../utils/image')
 const { isConfigured, chat } = require('../utils/ark')
+const { asyncHandler } = require('../utils/asyncHandler')
 
 const router = express.Router()
 
@@ -95,7 +96,7 @@ ${hasImage ? '请仔细观察图片中植物的叶片、茎干、根部状态。
   return result
 }
 
-router.post('/detect', async (req, res) => {
+router.post('/detect', asyncHandler(async (req, res) => {
   const { image, description = '' } = req.body
   const hasImage = Boolean(image)
 
@@ -159,6 +160,6 @@ router.post('/detect', async (req, res) => {
       }
     })
   }
-})
+}))
 
 module.exports = router
