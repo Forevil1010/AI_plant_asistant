@@ -23,12 +23,15 @@ const Home: React.FC = () => {
 
   // 构建知识库id -> 花园植物的映射，快速判断是否已加入花园
   const gardenPlantMap = useMemo(() => {
-    const map = new Map<string, string>()
-    state.gardenPlants.forEach(plant => {
+  const map = new Map<string, string>()
+  state.gardenPlants.forEach(plant => {
+    // 先判断不为空再存入
+    if (plant.knowledgeId) {
       map.set(plant.knowledgeId, plant.id)
-    })
-    return map
-  }, [state.gardenPlants])
+    }
+  })
+  return map
+}, [state.gardenPlants])
 
   const plantMap = useMemo(() => new Map(state.gardenPlants.map((plant) => [plant.id, plant.nickname || plant.name])), [state.gardenPlants])
   const pendingTasks = useMemo(() => state.careTasks.filter((task) => task.status === 'pending'), [state.careTasks])
