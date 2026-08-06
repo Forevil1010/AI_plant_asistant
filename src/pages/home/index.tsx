@@ -108,7 +108,7 @@ const Home: React.FC = () => {
             {results.length ? results.map((plant) => (
               <View 
                 key={plant.id} 
-                className="search-result" 
+                className='search-result' 
                 onClick={() => goPlantPage(plant.id)}
               >
                 <Image src={plant.imageUrl} mode='aspectFill' />
