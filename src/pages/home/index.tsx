@@ -20,6 +20,16 @@ const Home: React.FC = () => {
   const [query, setQuery] = useState('')
   const [searched, setSearched] = useState(false)
   const [results, setResults] = useState<typeof plantKnowledge>([])
+
+  // 构建知识库id -> 花园植物的映射，快速判断是否已加入花园
+  const gardenPlantMap = useMemo(() => {
+    const map = new Map<string, string>()
+    state.gardenPlants.forEach(plant => {
+      map.set(plant.knowledgeId, plant.id)
+    })
+    return map
+  }, [state.gardenPlants])
+
   const plantMap = useMemo(() => new Map(state.gardenPlants.map((plant) => [plant.id, plant.nickname || plant.name])), [state.gardenPlants])
   const pendingTasks = useMemo(() => state.careTasks.filter((task) => task.status === 'pending'), [state.careTasks])
   const todayTasks = useMemo(() => pendingTasks
@@ -34,6 +44,23 @@ const Home: React.FC = () => {
     }
     setResults(searchPlantKnowledge(query))
     setSearched(true)
+  }
+
+  // 搜索结果点击跳转逻辑（唯一goPlantPage，无重复）
+  const goPlantPage = (knowledgeId: string) => {
+    setSearched(false) // 关闭搜索弹窗
+    const gardenPlantId = gardenPlantMap.get(knowledgeId)
+    if (gardenPlantId) {
+      // 已加入花园 → 跳转养护详情
+      Taro.navigateTo({
+        url: `/pages/plant-detail/index?id=${gardenPlantId}`
+      })
+    } else {
+      // 未加入花园 → 跳转科普页
+      Taro.navigateTo({
+        url: `/pages/plant-knowledge/index?id=${knowledgeId}`
+      })
+    }
   }
 
   const completeTask = (id: string) => {
@@ -76,12 +103,20 @@ const Home: React.FC = () => {
               <Text className='section-link' onClick={() => setSearched(false)}>关闭</Text>
             </View>
             {results.length ? results.map((plant) => (
-              <View key={plant.id} className='search-result'>
+              <View 
+                key={plant.id} 
+                className="search-result" 
+                onClick={() => goPlantPage(plant.id)}
+              >
                 <Image src={plant.imageUrl} mode='aspectFill' />
                 <View>
                   <Text className='search-result__name'>{plant.name}</Text>
                   <Text className='search-result__latin'>{plant.latinName}</Text>
                   <Text className='search-result__summary'>{plant.summary}</Text>
+                  {/* 标记：已在花园的植物增加提示 */}
+                  {gardenPlantMap.has(plant.id) && (
+                    <Text style={{ color: '#07c160', fontSize: '22rpx', marginTop: '6rpx' }}>已添加至我的花园，点击查看养护</Text>
+                  )}
                 </View>
               </View>
             )) : (
