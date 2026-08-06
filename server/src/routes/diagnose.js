@@ -1,5 +1,7 @@
 const express = require('express')
 const { parseImageDataUrl, RequestValidationError } = require('../utils/image')
+const { isConfigured, chat } = require('../utils/ark')
+const { asyncHandler } = require('../utils/asyncHandler')
 
 const router = express.Router()
 
@@ -41,7 +43,60 @@ function getMockDiagnosis(description, hasImage) {
   }
 }
 
-router.post('/detect', (req, res) => {
+/**
+ * 调用火山方舟视觉模型诊断病虫害
+ */
+async function diagnoseWithAI(description, imageBase64, mimeType, hasImage) {
+  const prompt = `你是一位专业的植物病理学家和昆虫学家。请诊断植物的病虫害问题，并以 JSON 格式返回结果。
+
+${hasImage ? '请仔细观察图片中植物的叶片、茎干、根部状态。' : '当前仅有文字描述，请基于描述进行初步判断。'}
+
+用户描述：${description || '（用户未提供文字描述）'}
+
+请返回 JSON 格式（不要包含 markdown 代码块标记），包含以下字段：
+{
+  "title": "诊断结论标题",
+  "confidenceLabel": "可信度描述（高可信/中等可信/初步判断）",
+  "severity": "严重程度（轻微/中等/严重）",
+  "evidence": ["判断依据1", "判断依据2"],
+  "causes": ["可能原因1", "可能原因2"],
+  "actions": ["处理建议1", "处理建议2", "处理建议3"],
+  "followUp": "后续观察建议",
+  "safety": "安全注意事项"
+}
+
+注意：
+- 如果图片不清晰或信息不足，请如实说明
+- 处理建议要具体可操作
+- 安全注意事项很重要，请务必提醒用户`
+
+  const text = await chat({
+    prompt,
+    imageBase64,
+    mimeType,
+    maxTokens: 2048,
+    temperature: 0.3
+  })
+
+  // 提取 JSON 内容
+  const jsonStr = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+  const parsed = JSON.parse(jsonStr)
+
+  const result = {
+    title: parsed.title || '诊断完成',
+    confidenceLabel: parsed.confidenceLabel || '中等可信',
+    severity: parsed.severity || '中等',
+    evidence: parsed.evidence || [],
+    causes: parsed.causes || [],
+    actions: parsed.actions || [],
+    followUp: parsed.followUp || '',
+    safety: parsed.safety || ''
+  }
+
+  return result
+}
+
+router.post('/detect', asyncHandler(async (req, res) => {
   const { image, description = '' } = req.body
   const hasImage = Boolean(image)
 
@@ -60,16 +115,51 @@ router.post('/detect', (req, res) => {
     })
   }
 
-  if (image) parseImageDataUrl(image)
-  const mockResult = getMockDiagnosis(description, hasImage)
-  return res.json({
-    code: 0,
-    message: '当前未配置真实 AI 服务，已返回模拟结果',
-    data: {
-      isMock: true,
-      result: mockResult
-    }
-  })
-})
+  let imageBase64 = null
+  let mimeType = 'image/jpeg'
+  if (image) {
+    const parsed = parseImageDataUrl(image)
+    imageBase64 = parsed.base64
+    mimeType = parsed.mimeType
+  }
+
+  // 未配置 AI 时返回 mock 数据
+  if (!isConfigured()) {
+    const mockResult = getMockDiagnosis(description, hasImage)
+    return res.json({
+      code: 0,
+      message: '当前未配置真实 AI 服务，已返回模拟结果',
+      data: {
+        isMock: true,
+        result: mockResult
+      }
+    })
+  }
+
+  try {
+    const aiResult = await diagnoseWithAI(description, imageBase64, mimeType, hasImage)
+    return res.json({
+      code: 0,
+      message: '诊断成功',
+      data: {
+        isMock: false,
+        result: aiResult
+      }
+    })
+  } catch (error) {
+    console.error('病虫害诊断失败:', error.message)
+    // AI 失败时回退到 mock
+    const mockResult = getMockDiagnosis(description, hasImage)
+    return res.json({
+      code: 0,
+      message: 'AI 服务暂时不可用，已返回模拟结果',
+      data: {
+        isMock: true,
+        isFallback: true,
+        result: mockResult
+      }
+    })
+  }
+}))
 
 module.exports = router

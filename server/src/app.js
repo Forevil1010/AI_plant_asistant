@@ -5,6 +5,7 @@ const cors = require('cors')
 
 const plantRoutes = require('./routes/plant')
 const diagnoseRoutes = require('./routes/diagnose')
+const ark = require('./utils/ark')
 const { createCorsOptions, createRateLimiter, getRateLimitOptions } = require('./middleware/security')
 
 function createApp() {
@@ -21,8 +22,8 @@ function createApp() {
       message: 'ok',
       data: {
         status: 'running',
-        aiMode: 'mock',
-        hasAiProvider: false
+        aiMode: ark.isConfigured() ? 'ark' : 'mock',
+        hasAiProvider: ark.isConfigured()
       }
     })
   })
@@ -52,7 +53,7 @@ function startServer(port = Number(process.env.PORT) || 3000) {
   const server = createApp().listen(port, () => {
     console.log(`AI 园林助手后端已启动: http://localhost:${port}/api/health`)
 
-    console.log('当前未配置真实 AI 服务，识别与诊断接口使用模拟数据')
+    console.log(`AI 模式: ${ark.isConfigured() ? '火山方舟 (Ark)' : '模拟数据 (Mock)'}`)
   })
   return server
 }
