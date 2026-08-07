@@ -6,9 +6,21 @@
   background: #dfe5df;
 }
 
+.knowledge-cover--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #174f37;
+  color: #dceee3;
+  font-size: 30px;
+  font-weight: 650;
+}
+
 .knowledge-content {
   padding: 26px 30px 0;
 }
+
+.knowledge-source { display: inline-block; margin-bottom: 18px; padding: 9px 13px; border-radius: 6px; background: #e7f3eb; color: #176b45; font-size: 20px; }
 
 .knowledge-identity text { display: block; }
 .knowledge-name { color: #17251d; font-size: 44px; font-weight: 700; line-height: 1.2; }

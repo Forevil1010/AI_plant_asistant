@@ -3,15 +3,22 @@ import Taro, { useLoad } from '@tarojs/taro'
 import { Button, Image, Text, View } from '@tarojs/components'
 import { findPlantKnowledge } from '../../data/plants'
 import { createId, useApp } from '../../store'
+import { PlantKnowledge as PlantKnowledgeType } from '../../types'
+import { readPlantSearchResult } from '../../utils/plant-search-cache'
 import './index.scss'
 
 const PlantKnowledge: React.FC = () => {
   const { savePlant } = useApp()
   const [knowledgeId, setKnowledgeId] = React.useState('')
+  const [aiKnowledge, setAiKnowledge] = React.useState<PlantKnowledgeType | undefined>()
 
-  useLoad((options) => setKnowledgeId(options.id || ''))
+  useLoad((options) => {
+    const id = options.id || ''
+    setKnowledgeId(id)
+    setAiKnowledge(options.source === 'ai' ? readPlantSearchResult(id) : undefined)
+  })
 
-  const knowledge = findPlantKnowledge(knowledgeId)
+  const knowledge = aiKnowledge || findPlantKnowledge(knowledgeId)
 
   if (!knowledge) {
     return (
@@ -51,8 +58,13 @@ const PlantKnowledge: React.FC = () => {
 
   return (
     <View className='plant-knowledge-page'>
-      <Image className='knowledge-cover' src={knowledge.imageUrl} mode='aspectFill' />
+      {knowledge.imageUrl ? (
+        <Image className='knowledge-cover' src={knowledge.imageUrl} mode='aspectFill' />
+      ) : (
+        <View className='knowledge-cover knowledge-cover--placeholder'><Text>AI 植物资料</Text></View>
+      )}
       <View className='knowledge-content'>
+        {aiKnowledge && <Text className='knowledge-source'>火山方舟 AI 搜索结果</Text>}
         <View className='knowledge-identity'>
           <Text className='knowledge-name'>{knowledge.name}</Text>
           <Text className='knowledge-latin'>{knowledge.latinName}</Text>

@@ -77,6 +77,31 @@ test('returns a clearly marked mock identification when AI is not configured', a
   assert.ok(body.data.result.name)
 })
 
+test('returns local text search results when AI is not configured', async () => {
+  const response = await fetch(`${baseUrl}/api/plant/search`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: '龟背竹' })
+  })
+  const body = await response.json()
+
+  assert.equal(response.status, 200)
+  assert.equal(body.data.isMock, true)
+  assert.equal(body.data.results[0].name, '龟背竹')
+})
+
+test('rejects an empty plant text search', async () => {
+  const response = await fetch(`${baseUrl}/api/plant/search`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: '   ' })
+  })
+  const body = await response.json()
+
+  assert.equal(response.status, 400)
+  assert.equal(body.code, 400)
+})
+
 test('rejects invalid image payloads before returning mock data', async () => {
   const response = await fetch(`${baseUrl}/api/plant/identify`, {
     method: 'POST',
@@ -139,6 +164,35 @@ test('returns a normalized real Ark identification', async () => {
     assert.equal(body.data.isMock, false)
     assert.equal(body.data.result.name, '绿萝')
     assert.deepEqual(body.data.result.tags, ['耐阴'])
+  })
+})
+
+test('returns normalized real Ark text search results', async () => {
+  await withArkResponse(JSON.stringify({
+    result: {
+      name: '龟背竹',
+      latinName: 'Monstera deliciosa',
+      aliases: ['蓬莱蕉'],
+      confidence: '96%',
+      summary: '常见室内观叶植物',
+      tags: ['观叶', '室内'],
+      care: { light: '明亮散射光', water: '见干见湿' },
+      safety: '避免宠物误食'
+    },
+    candidates: []
+  }), async () => {
+    const response = await fetch(`${baseUrl}/api/plant/search`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: '龟背竹' })
+    })
+    const body = await response.json()
+
+    assert.equal(response.status, 200)
+    assert.equal(body.data.isMock, false)
+    assert.equal(body.data.results[0].name, '龟背竹')
+    assert.equal(body.data.results[0].confidence, 0.96)
+    assert.equal(body.data.results[0].care.light, '明亮散射光')
   })
 })
 
