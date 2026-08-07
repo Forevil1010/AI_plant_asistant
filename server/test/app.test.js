@@ -1,7 +1,10 @@
 const assert = require('node:assert/strict')
 const { after, before, test } = require('node:test')
 
+const previousArkApiKey = process.env.ARK_API_KEY
+
 process.env.RATE_LIMIT_MAX = '100'
+process.env.ARK_API_KEY = 'ark-xxxxxxxx'
 
 const { createApp } = require('../src/app')
 
@@ -48,6 +51,8 @@ before(async () => {
 
 after(async () => {
   await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()))
+  if (previousArkApiKey === undefined) delete process.env.ARK_API_KEY
+  else process.env.ARK_API_KEY = previousArkApiKey
 })
 
 test('reports backend health without exposing a credential', async () => {
