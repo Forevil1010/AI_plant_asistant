@@ -34,3 +34,11 @@
 .garden-task__actions button { height: 64px; margin: 0; padding: 0; border-radius: 8px; font-size: 23px; line-height: 64px; }
 .garden-task__actions button:first-child { border: 1px solid #d8deda; background: #fff; color: #69716b; }
 .garden-task__actions button:last-child { background: #176b45; color: #fff; }
+
+.task-overdue {
+  background-color: #fff5f5;
+}
+.task-text-danger {
+  color: #f53f3f;
+  font-weight: 700;
+}
