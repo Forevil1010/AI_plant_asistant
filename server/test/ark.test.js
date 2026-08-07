@@ -63,7 +63,11 @@ test('does not expose the Ark error response body', async () => {
 test('aborts an Ark request after the configured timeout', async () => {
   const env = { ...configuredEnv, ARK_TIMEOUT_MS: '10' }
   const fetchImpl = (_url, options) => new Promise((_resolve, reject) => {
-    options.signal.addEventListener('abort', () => reject(options.signal.reason), { once: true })
+    const guardTimer = setTimeout(() => reject(new Error('Abort signal was not triggered')), 100)
+    options.signal.addEventListener('abort', () => {
+      clearTimeout(guardTimer)
+      reject(options.signal.reason)
+    }, { once: true })
   })
 
   await assert.rejects(
