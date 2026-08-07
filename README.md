@@ -2,7 +2,7 @@
 
 AI 园林助手是一款面向普通植物爱好者和养护新手的免费工具，以微信小程序为主要使用入口，帮助用户认识植物、初步判断植物问题，并持续管理自己的植物和养护任务。
 
-当前仓库已经完成一版可运行的本地 MVP。项目采用 Taro + React + TypeScript，可构建为微信小程序和 H5；已接入火山方舟 Doubao-Seed-2.0-Mini 视觉多模态模型完成真实 AI 识别与诊断，个人数据保存在当前设备。仓库同时提供可在本地启动的 Express 后端服务，AI 调用失败时自动回退到 Mock 数据。
+当前仓库已经完成一版可运行的本地 MVP。项目采用 Taro + React + TypeScript，可构建为微信小程序和 H5；已实现火山方舟 Doubao-Seed-2.0-Mini 视觉多模态适配器，配置有效密钥和后端地址后可完成真实 AI 识别与诊断，个人数据保存在当前设备。仓库同时提供可在本地启动的 Express 后端服务，AI 调用失败时自动回退到 Mock 数据。
 
 ## 当前功能
 
@@ -19,11 +19,11 @@ AI 园林助手是一款面向普通植物爱好者和养护新手的免费工�
 
 ## 当前边界
 
-- 植物识别和问题诊断已接入火山方舟 Doubao-Seed-2.0-Mini 视觉多模态模型，但 AI 结果仅供参考，不能替代专业检测。
+- 植物识别和问题诊断已实现火山方舟 Doubao-Seed-2.0-Mini 适配器、超时、响应校验和 Mock 回退；真实密钥联调、HTTPS 部署及微信真机验证仍需完成。AI 结果仅供参考，不能替代专业检测。
 - 尚无已部署的 CloudBase 或其他数据后端，不支持登录、云同步和多设备共享；仓库中的 `server/` 是本地 Express 服务，已接入火山方舟 AI。
 - 已能创建并在应用内查看养护任务；微信订阅消息已明确暂缓，不作为当前版本验收阻塞项。
 - 当前内置知识库只包含少量演示植物，不是完整植物百科。
-- 首页搜索结果目前只展示植物摘要，不能像下方常见植物卡片一样进入知识详情，该交互已列入待办。
+- 首页搜索结果和下方常见植物卡片均可进入知识详情；已加入花园的搜索结果会进入对应养护详情。
 - 正式小程序 AppID、基本信息、类目和微信认证已完成配置，备案已提交并处于管局审核中；微信开发者工具调试已通过，体验版真机全流程和发布验收仍待完成。
 - 项目完全免费，首版不包含支付、会员、广告、社区、专家问诊或内容运营后台。
 
@@ -40,7 +40,7 @@ AI 园林助手是一款面向普通植物爱好者和养护新手的免费工�
 | 样式 | SCSS |
 | 状态管理 | React Context + Reducer |
 | 本地存储 | Taro Storage |
-| 测试与检查 | Jest（17 个前端测试、9 个后端测试）、ESLint、TypeScript |
+| 测试与检查 | Jest（22 个前端测试、22 个后端测试）、ESLint、TypeScript |
 | 自动检查 | GitHub Actions |
 | 可选后端 | Node.js 22、Express，已接入火山方舟 Doubao-Seed-2.0-Mini |
 
@@ -54,7 +54,7 @@ AI 园林助手是一款面向普通植物爱好者和养护新手的免费工�
 - 微信开发者工具：用于微信小程序预览和真机调试。
 - 微信小程序 AppID：只做本地界面体验时可暂用测试号；预览、真机调试、订阅消息和发布时需要已注册的小程序及相应权限。
 
-默认 Mock 模式不需要 CloudBase、数据库、AI 密钥或单独启动后端服务。需要验证本地 Express 接口或联调未来真实 AI 时，再安装并启动 `server/`。
+默认 Mock 模式不需要 CloudBase、数据库、AI 密钥或单独启动后端服务。需要验证本地 Express 接口或联调真实 AI 时，再安装并启动 `server/`。
 
 ### 安装依赖
 
@@ -89,20 +89,25 @@ npm run dev:weapp
 ARK_API_KEY=ark-xxxxxxxxx-xxxxx
 ARK_MODEL=doubao-seed-2-0-mini-260428
 ARK_BASE_URL=https://ark.cn-beijing.volces.com/api/v3
+ARK_TIMEOUT_MS=25000
 ```
 
-2. **前端配置**：复制根目录 `.env.example` 为 `.env`：
+2. **前端配置**：复制根目录 `.env.example` 为 `.env`，本地联调时明确改为：
 
 ```env
 TARO_APP_API_BASE_URL=http://localhost:3000/api
 TARO_APP_USE_MOCK=false
 ```
 
-3. **启动后端**：
+未配置后端地址时必须保持 `TARO_APP_USE_MOCK=true`；启用真实 AI 但缺少地址时，构建会直接报错。
+
+3. **启动并检查后端**：
 
 ```bash
 npm run dev --prefix server
 ```
+
+访问 `http://localhost:3000/api/health`，确认 `aiMode` 为 `ark` 且 `hasAiProvider` 为 `true`。健康检查不会返回密钥。
 
 4. **启动前端**：
 
@@ -110,7 +115,7 @@ npm run dev --prefix server
 npm run dev:h5
 ```
 
-配置完成后，植物识别和病虫害诊断将调用真实 AI。未配置 `ARK_API_KEY` 时自动回退到 Mock 数据，AI 调用失败时也会自动回退。微信真机必须使用已部署的 HTTPS 地址，不能使用 `localhost`，还要在微信公众平台配置 request 合法域名。
+配置完成后，植物识别和病虫害诊断将调用真实 AI。未配置有效 `ARK_API_KEY` 时返回 Mock 数据；AI 超时、HTTP 错误或结构异常时会自动回退并在页面标记来源。微信真机必须使用已部署的 HTTPS 地址，不能使用 `localhost`，还要在微信公众平台配置 request 合法域名。当前后端尚未实现微信身份鉴权，只适合本地或受控体验联调；正式公网发布前必须补齐鉴权和费用保护。
 
 ### 构建与质量检查
 
@@ -129,9 +134,9 @@ npm run build:weapp
 | 页面 | 路径 | 说明 |
 | --- | --- | --- |
 | 首页 | `/pages/home/index` | 搜索、入口、任务和推荐 |
-| 植物识别 | `/pages/identify/index` | 图片输入、Mock 识别和结果 |
+| 植物识别 | `/pages/identify/index` | 图片输入、真实 AI/Mock 识别和结果 |
 | 我的花园 | `/pages/garden/index` | 植物列表和养护任务 |
-| 植物诊断 | `/pages/diagnose/index` | 图文输入、Mock 诊断和建议 |
+| 植物诊断 | `/pages/diagnose/index` | 图文输入、真实 AI/Mock 诊断和建议 |
 | 个人中心 | `/pages/profile/index` | 数据概览、历史和设置 |
 | 植物表单 | `/pages/plant-form/index` | 新建或编辑植物档案 |
 | 植物详情 | `/pages/plant-detail/index` | 养护记录、任务和品种参考 |

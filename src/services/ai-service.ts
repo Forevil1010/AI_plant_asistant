@@ -66,7 +66,16 @@ export async function identifyPlant(imagePath: string): Promise<IdentifyResponse
       throw new Error('未识别到植物')
     }
 
-    return { ...result, source: getResultSource(result) }
+    const attachSourceImage = (plant: PlantKnowledge): PlantKnowledge => ({
+      ...plant,
+      imageUrl: plant.imageUrl || imagePath
+    })
+    return {
+      ...result,
+      result: attachSourceImage(result.result),
+      candidates: (result.candidates || []).map(attachSourceImage),
+      source: getResultSource(result)
+    }
   } catch (error) {
     Taro.showToast({ title: '连接失败，展示模拟结果', icon: 'none' })
     const { result, candidates } = await mockIdentify(imagePath)
