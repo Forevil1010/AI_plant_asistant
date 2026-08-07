@@ -1,11 +1,15 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import Taro from '@tarojs/taro'
 import { Button, Image, ScrollView, Text, View } from '@tarojs/components'
+import Loading from '../../components/Loading'
 import SearchBar from '../../components/SearchBar'
-import { plantKnowledge, searchPlantKnowledge } from '../../data/plants'
+import { plantKnowledge } from '../../data/plants'
+import { searchPlantByText } from '../../services/ai-service'
 import { useApp } from '../../store'
+import { AiResultSource, PlantKnowledge } from '../../types'
 import { formatDateTime, isOverdue, isToday } from '../../utils/date'
 import { careTypeLabels } from '../../utils/labels'
+import { savePlantSearchResult } from '../../utils/plant-search-cache'
 import './index.scss'
 
 const dailyTips = [
@@ -19,7 +23,10 @@ const Home: React.FC = () => {
   const { state, finishCareTask, snoozeCareTask } = useApp()
   const [query, setQuery] = useState('')
   const [searched, setSearched] = useState(false)
-  const [results, setResults] = useState<typeof plantKnowledge>([])
+  const [results, setResults] = useState<PlantKnowledge[]>([])
+  const [searchLoading, setSearchLoading] = useState(false)
+  const [searchSource, setSearchSource] = useState<AiResultSource | null>(null)
+  const searchRequestRef = useRef(0)
 
   // 构建知识库id -> 花园植物的映射，快速判断是否已加入花园
   const gardenPlantMap = useMemo(() => {
@@ -40,28 +47,49 @@ const Home: React.FC = () => {
     .sort((a, b) => a.dueAt.localeCompare(b.dueAt))
     .slice(0, 4), [pendingTasks])
 
-  const search = () => {
+  const search = async () => {
     if (!query.trim()) {
       Taro.showToast({ title: '请输入植物名称', icon: 'none' })
       return
     }
-    setResults(searchPlantKnowledge(query))
+
+    const requestId = ++searchRequestRef.current
     setSearched(true)
+    setSearchLoading(true)
+    setSearchSource(null)
+    setResults([])
+    try {
+      const response = await searchPlantByText(query.trim())
+      if (requestId !== searchRequestRef.current) return
+      setResults(response.results)
+      setSearchSource(response.source)
+    } finally {
+      if (requestId === searchRequestRef.current) setSearchLoading(false)
+    }
   }
 
-  // 搜索结果点击跳转逻辑（唯一goPlantPage，无重复）
-  const goPlantPage = (knowledgeId: string) => {
-    setSearched(false) // 关闭搜索弹窗
-    const gardenPlantId = gardenPlantMap.get(knowledgeId)
+  const closeSearch = () => {
+    searchRequestRef.current += 1
+    setSearchLoading(false)
+    setSearched(false)
+  }
+
+  const goPlantPage = (plant: PlantKnowledge) => {
+    setSearched(false)
+    if (plant.id.startsWith('ai-')) {
+      savePlantSearchResult(plant)
+      Taro.navigateTo({ url: `/pages/plant-knowledge/index?id=${plant.id}&source=ai` })
+      return
+    }
+
+    const gardenPlantId = gardenPlantMap.get(plant.id)
     if (gardenPlantId) {
-      // 已加入花园 → 跳转养护详情
       Taro.navigateTo({
         url: `/pages/plant-detail/index?id=${gardenPlantId}`
       })
     } else {
-      // 未加入花园 → 跳转科普页
       Taro.navigateTo({
-        url: `/pages/plant-knowledge/index?id=${knowledgeId}`
+        url: `/pages/plant-knowledge/index?id=${plant.id}`
       })
     }
   }
@@ -97,21 +125,37 @@ const Home: React.FC = () => {
       </View>
 
       <View className='home-content'>
-        <SearchBar value={query} onChange={(value) => { setQuery(value); setSearched(false) }} onSearch={search} />
+        <SearchBar
+          value={query}
+          loading={searchLoading}
+          onChange={(value) => {
+            searchRequestRef.current += 1
+            setQuery(value)
+            setSearchLoading(false)
+            setSearched(false)
+          }}
+          onSearch={search}
+        />
 
         {searched && (
           <View className='search-results card'>
             <View className='section-header'>
               <Text className='section-title'>搜索结果</Text>
-              <Text className='section-link' onClick={() => setSearched(false)}>关闭</Text>
+              <Text className='section-link' onClick={closeSearch}>关闭</Text>
             </View>
-            {results.length ? results.map((plant) => (
+            {searchLoading ? (
+              <Loading text='AI 正在查询植物资料' />
+            ) : results.length ? results.map((plant) => (
               <View 
                 key={plant.id} 
                 className='search-result' 
-                onClick={() => goPlantPage(plant.id)}
+                onClick={() => goPlantPage(plant)}
               >
-                <Image src={plant.imageUrl} mode='aspectFill' />
+                {plant.imageUrl ? (
+                  <Image src={plant.imageUrl} mode='aspectFill' />
+                ) : (
+                  <View className='search-result__image-placeholder'><Text>AI</Text></View>
+                )}
                 <View>
                   <Text className='search-result__name'>{plant.name}</Text>
                   <Text className='search-result__latin'>{plant.latinName}</Text>
@@ -127,6 +171,15 @@ const Home: React.FC = () => {
                 <Text className='empty-title'>没有找到相关资料</Text>
                 <Text className='empty-copy'>可以换一个名称，或者直接拍照识别。</Text>
               </View>
+            )}
+            {searchSource && !searchLoading && (
+              <Text className={`search-source search-source--${searchSource}`}>
+                {searchSource === 'ai'
+                  ? '火山方舟 AI 搜索结果'
+                  : searchSource === 'mock'
+                    ? '本地资料结果'
+                    : 'AI 暂不可用，当前显示本地结果'}
+              </Text>
             )}
           </View>
         )}

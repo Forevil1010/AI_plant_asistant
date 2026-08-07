@@ -1,5 +1,6 @@
 import Taro from '@tarojs/taro'
 import { AiResultSource, DiagnosisResult, PlantKnowledge } from '../types'
+import { plantKnowledge, searchPlantKnowledge } from '../data/plants'
 import { identifyPlant as mockIdentify, diagnosePlant as mockDiagnose } from './mock-ai'
 import { fileToBase64 } from '../utils/image'
 
@@ -43,10 +44,51 @@ export interface DiagnosisResponse {
   source: AiResultSource
 }
 
+export interface PlantSearchResponse {
+  results: PlantKnowledge[]
+  source: AiResultSource
+}
+
 function getResultSource(result: { isMock?: boolean; isFallback?: boolean }): AiResultSource {
   if (result.isFallback) return 'fallback'
   if (result.isMock) return 'mock'
   return 'ai'
+}
+
+function attachKnownPlantImage(result: PlantKnowledge): PlantKnowledge {
+  if (result.imageUrl) return result
+  const resultNames = [result.name, result.latinName, ...result.aliases]
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean)
+  const knownPlant = plantKnowledge.find((plant) =>
+    [plant.name, plant.latinName, ...plant.aliases]
+      .some((value) => resultNames.includes(value.trim().toLowerCase()))
+  )
+  return knownPlant ? { ...result, imageUrl: knownPlant.imageUrl } : result
+}
+
+export async function searchPlantByText(query: string): Promise<PlantSearchResponse> {
+  const localResults = () => searchPlantKnowledge(query)
+
+  if (USE_MOCK) {
+    return { results: localResults(), source: 'mock' }
+  }
+
+  try {
+    const result = await request<{
+      results: PlantKnowledge[]
+      isMock?: boolean
+      isFallback?: boolean
+    }>('/plant/search', { query })
+
+    return {
+      results: (result.results || []).map(attachKnownPlantImage),
+      source: getResultSource(result)
+    }
+  } catch {
+    Taro.showToast({ title: 'AI 搜索连接失败，显示本地结果', icon: 'none' })
+    return { results: localResults(), source: 'fallback' }
+  }
 }
 
 export async function identifyPlant(imagePath: string): Promise<IdentifyResponse> {
