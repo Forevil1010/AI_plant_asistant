@@ -1,81 +1,110 @@
-/**
- * 火山方舟 (Volcengine Ark) API 调用工具
- * 使用 Doubao-Seed-2.0-Mini 视觉多模态模型
- */
+const DEFAULT_MODEL = 'doubao-seed-2-0-mini-260428'
+const DEFAULT_BASE_URL = 'https://ark.cn-beijing.volces.com/api/v3'
+const DEFAULT_TIMEOUT_MS = 25_000
 
-const ARK_API_KEY = process.env.ARK_API_KEY || ''
-const ARK_MODEL = process.env.ARK_MODEL || 'doubao-seed-2-0-mini-260428'
-const ARK_BASE_URL = process.env.ARK_BASE_URL || 'https://ark.cn-beijing.volces.com/api/v3'
-
-function isConfigured() {
-  return Boolean(ARK_API_KEY)
+class ArkServiceError extends Error {
+  constructor(message, code, status) {
+    super(message)
+    this.name = 'ArkServiceError'
+    this.code = code
+    this.status = status
+  }
 }
 
-/**
- * 调用火山方舟 Chat API，支持文本 + 图片输入
- * @param {Object} params
- * @param {string} params.prompt - 文本提示词
- * @param {string} [params.imageBase64] - 图片 base64 数据（不含 data: 前缀）
- * @param {string} [params.mimeType] - 图片 MIME 类型，如 image/jpeg
- * @param {number} [params.maxTokens] - 最大输出 token 数
- * @param {number} [params.temperature] - 采样温度 0~2
- * @returns {Promise<string>} 模型返回的文本内容
- */
-async function chat({ prompt, imageBase64, mimeType = 'image/jpeg', maxTokens = 4096, temperature = 0.7 }) {
-  if (!isConfigured()) {
-    throw new Error('未配置 ARK_API_KEY')
+function parsePositiveInteger(value, fallback) {
+  const parsed = Number.parseInt(value, 10)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback
+}
+
+function getArkConfig(env = process.env) {
+  return {
+    apiKey: String(env.ARK_API_KEY || '').trim(),
+    model: String(env.ARK_MODEL || DEFAULT_MODEL).trim(),
+    baseUrl: String(env.ARK_BASE_URL || DEFAULT_BASE_URL).trim().replace(/\/$/, ''),
+    timeoutMs: parsePositiveInteger(env.ARK_TIMEOUT_MS, DEFAULT_TIMEOUT_MS)
+  }
+}
+
+function isConfigured(env = process.env) {
+  const { apiKey } = getArkConfig(env)
+  if (!apiKey) return false
+  return !/^ark-x+(?:-x+)*$/i.test(apiKey) && !/^(?:your|replace|example)[-_]/i.test(apiKey)
+}
+
+function readMessageText(content) {
+  if (typeof content === 'string') return content.trim()
+  if (!Array.isArray(content)) return ''
+  return content
+    .map((item) => typeof item?.text === 'string' ? item.text.trim() : '')
+    .filter(Boolean)
+    .join('\n')
+}
+
+async function chat(
+  { prompt, imageBase64, mimeType = 'image/jpeg', maxTokens = 4096, temperature = 0.7 },
+  { env = process.env, fetchImpl = global.fetch } = {}
+) {
+  const config = getArkConfig(env)
+  if (!isConfigured(env)) {
+    throw new ArkServiceError('未配置有效的 ARK_API_KEY', 'not_configured')
+  }
+  if (typeof fetchImpl !== 'function') {
+    throw new ArkServiceError('当前 Node.js 运行时不支持 fetch', 'fetch_unavailable')
   }
 
   const content = []
-
   if (imageBase64) {
     content.push({
       type: 'image_url',
-      image_url: {
-        url: `data:${mimeType};base64,${imageBase64}`
-      }
+      image_url: { url: `data:${mimeType};base64,${imageBase64}` }
     })
   }
+  content.push({ type: 'text', text: prompt })
 
-  content.push({
-    type: 'text',
-    text: prompt
-  })
-
-  const body = {
-    model: ARK_MODEL,
-    messages: [
-      {
-        role: 'user',
-        content
-      }
-    ],
-    max_tokens: maxTokens,
-    temperature
+  let response
+  try {
+    response = await fetchImpl(`${config.baseUrl}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${config.apiKey}`
+      },
+      body: JSON.stringify({
+        model: config.model,
+        messages: [{ role: 'user', content }],
+        max_tokens: maxTokens,
+        temperature
+      }),
+      signal: AbortSignal.timeout(config.timeoutMs)
+    })
+  } catch (error) {
+    if (error?.name === 'AbortError' || error?.name === 'TimeoutError') {
+      throw new ArkServiceError('Ark API 请求超时', 'timeout')
+    }
+    throw new ArkServiceError('Ark API 网络请求失败', 'network_error')
   }
-
-  const response = await fetch(`${ARK_BASE_URL}/chat/completions`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${ARK_API_KEY}`
-    },
-    body: JSON.stringify(body)
-  })
 
   if (!response.ok) {
-    const errorText = await response.text()
-    throw new Error(`Ark API ${response.status}: ${errorText}`)
+    throw new ArkServiceError(`Ark API 请求失败 (${response.status})`, 'http_error', response.status)
   }
 
-  const data = await response.json()
-  const text = data?.choices?.[0]?.message?.content || ''
+  let data
+  try {
+    data = await response.json()
+  } catch {
+    throw new ArkServiceError('Ark API 返回了无效 JSON', 'invalid_json')
+  }
 
+  const text = readMessageText(data?.choices?.[0]?.message?.content)
   if (!text) {
-    throw new Error('Ark API 返回空内容')
+    throw new ArkServiceError('Ark API 返回空内容', 'empty_content')
   }
-
   return text
 }
 
-module.exports = { isConfigured, chat }
+module.exports = {
+  ArkServiceError,
+  chat,
+  getArkConfig,
+  isConfigured
+}

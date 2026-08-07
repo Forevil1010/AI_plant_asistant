@@ -1,6 +1,7 @@
 const express = require('express')
 const { parseImageDataUrl, RequestValidationError } = require('../utils/image')
 const { isConfigured, chat } = require('../utils/ark')
+const { normalizeDiagnosisResponse, parseModelJson } = require('../utils/aiResponse')
 const { asyncHandler } = require('../utils/asyncHandler')
 
 const router = express.Router()
@@ -78,22 +79,7 @@ ${hasImage ? '请仔细观察图片中植物的叶片、茎干、根部状态。
     temperature: 0.3
   })
 
-  // 提取 JSON 内容
-  const jsonStr = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
-  const parsed = JSON.parse(jsonStr)
-
-  const result = {
-    title: parsed.title || '诊断完成',
-    confidenceLabel: parsed.confidenceLabel || '中等可信',
-    severity: parsed.severity || '中等',
-    evidence: parsed.evidence || [],
-    causes: parsed.causes || [],
-    actions: parsed.actions || [],
-    followUp: parsed.followUp || '',
-    safety: parsed.safety || ''
-  }
-
-  return result
+  return normalizeDiagnosisResponse(parseModelJson(text))
 }
 
 router.post('/detect', asyncHandler(async (req, res) => {

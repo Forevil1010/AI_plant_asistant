@@ -1,31 +1,13 @@
 import { defineConfig } from '@tarojs/cli'
 import { readFileSync } from 'node:fs'
+import { parseEnvContent, resolveAiBuildConfig } from './env'
 
-// 手动读取 .env 文件，避免 loadEnvFile 兼容性问题
-const envPath = '.env'
-let apiBaseUrl = ''
-let useMock = true
-
+let fileEnv: Record<string, string> = {}
 try {
-  const envContent = readFileSync(envPath, 'utf-8')
-  for (const line of envContent.split('\n')) {
-    const trimmed = line.trim()
-    if (!trimmed || trimmed.startsWith('#')) continue
-    const eqIdx = trimmed.indexOf('=')
-    if (eqIdx === -1) continue
-    const key = trimmed.slice(0, eqIdx).trim()
-    const value = trimmed.slice(eqIdx + 1).trim()
-    if (key === 'TARO_APP_API_BASE_URL') apiBaseUrl = value
-    if (key === 'TARO_APP_USE_MOCK') useMock = value === 'true'
-  }
+  fileEnv = parseEnvContent(readFileSync('.env', 'utf-8'))
 } catch {}
 
-if (!apiBaseUrl) {
-  apiBaseUrl = 'http://localhost:3000/api'
-  useMock = false
-}
-
-console.log('[Taro Config] API_BASE_URL:', apiBaseUrl, 'USE_MOCK:', useMock)
+const { apiBaseUrl, useMock } = resolveAiBuildConfig(fileEnv)
 
 export default defineConfig({
   projectName: 'AI-plant-asist',
